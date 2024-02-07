@@ -1,31 +1,35 @@
--- Entity
+-- Entity: MotionPicture
 CREATE TABLE IF NOT EXISTS motion_picture (
 	id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	name VARCHAR(255) NOT NULL,
 	-- genres Genre[]
 	production VARCHAR(255) NOT NULL,
 	release_date DATETIME NOT NULL,
-	budget FLOAT NOT NULL
-	-- ratings Rating[]
+	budget FLOAT NOT NULL,
+	-- ? ratings Rating[]
 	-- awards Award[]
 	-- shooting_locations ShootingLocation[]
+  rating FLOAT NOT NULL,
+
+	ADD CONSTRAINT RatingBetween0And10
+	CHECK ( rating >= 0 AND rating <= 10 )
 );
 
--- Entity
+-- Entity: Movie
 CREATE TABLE IF NOT EXISTS movie (
 	id INTEGER PRIMARY KEY NOT NULL,
 	box_office_collection FLOAT,
   FOREIGN KEY(id) REFERENCES motion_picture(id)
 );
 
--- Entity
+-- Entity: TvSeries
 CREATE TABLE IF NOT EXISTS tv_series (
 	id INTEGER PRIMARY KEY NOT NULL,
 	no_seasons INTEGER,
   FOREIGN KEY(id) REFERENCES motion_picture(id)
 );
 
--- Entity
+-- Entity: Genre
 CREATE TABLE IF NOT EXISTS genre (
 	id INTEGER PRIMARY KEY NOT NULL,
 	name VARCHAR(255) NOT NULL,
@@ -35,7 +39,7 @@ CREATE TABLE IF NOT EXISTS genre (
   UNIQUE (name)
 );
 
--- Relation: 
+-- Relation: MotionPicture + Genre
 CREATE TABLE IF NOT EXISTS motion_picture_genre_association (
 	motion_picture_id INTEGER NOT NULL,	
 	genre_id INTEGER NOT NULL,
@@ -45,6 +49,7 @@ CREATE TABLE IF NOT EXISTS motion_picture_genre_association (
   FOREIGN KEY(genre_id) REFERENCES genre(id)
 )
 
+-- Entity: Person
 CREATE TABLE IF NOT EXISTS person (
 	id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	name VARCHAR(255) NOT NULL,
@@ -54,10 +59,9 @@ CREATE TABLE IF NOT EXISTS person (
 	-- roles Role[]
 	-- awards Award[]
 
-	ADD CONSTRAINT RatingBetween0And10
-	CHECK ( rating >= 0 AND rating <= 10 )
 );
 
+-- Entity: Role
 CREATE TABLE IF NOT EXISTS role (
 	person_id INTEGER NOT NULL,
 	motion_picture_id INTEGER NOT NULL,
@@ -81,18 +85,20 @@ CREATE TABLE IF NOT EXISTS role (
 -- 	CHECK ( val >= 0 AND val <= 10 )
 -- )
 
--- only one award per person per movie
+-- Entity: Award
 CREATE TABLE IF NOT EXISTS award (
 	person_id INTEGER NOT NULL,
 	motion_picture_id INTEGER NOT NULL,
 	name VARCHAR(255) NOT NULL,
 	year_received INTEGER NOT NULL, -- constraint?
 
+  -- only one award per person per movie
 	PRIMARY KEY (person_id, motion_picture_id, name),
   FOREIGN KEY(person_id) REFERENCES person(id),
   FOREIGN KEY(motion_picture_id) REFERENCES motion_picture(id)
 );
 
+-- Entity: ShootingLocation
 CREATE TABLE IF NOT EXISTS shooting_location (
 	motion_picture_id INTEGER NOT NULL,
 	name VARCHAR(255) NOT NULL,
@@ -105,6 +111,7 @@ CREATE TABLE IF NOT EXISTS shooting_location (
 	)
 );
 
+-- Entity: User
 CREATE TABLE IF NOT EXISTS user (
 	id INTEGER PRIMARY KEY NOT NULL
 	email VARCHAR(255) NOT NULL UNIQUE
@@ -115,11 +122,13 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS motion_picture_like (
 	user_id INTEGER NOT NULL,
 	motion_picture_id INTEGER NOT NULL,
-	PRIMARY KEY (user_id, motion_picture_id)
+	PRIMARY KEY (user_id, motion_picture_id),
+
+  FOREIGN KEY(user_id) REFERENCES user(id),
+  FOREIGN KEY(motion_picture_id) REFERENCES motion_picture(id)
 );
 
 -- TODO: Indexes
 -- TODO: Views
-
 
 -- is rating a table or just a number (users rate motion_pictures)
