@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-02-07T19:20:25.231Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0" etag="p7OC1Hntk6IGzpxCH2jZ" version="23.1.1" type="github">
+<mxfile host="app.diagrams.net" modified="2024-02-07T19:25:39.484Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0" etag="vQDuAm45eHr7NRxeGLVu" version="23.1.1" type="github">
   <diagram id="sM4I3jX4hoVVW6KOLBf2" name="Page-1">
     <mxGraphModel dx="2276" dy="1851" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -389,6 +389,9 @@
             <mxPoint x="420" y="100" as="sourcePoint" />
             <mxPoint x="470" y="50" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="hH_XcXbroc_VQiEmmSD--8" value="Can Role be a primary key??????????" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontColor=#000000;darkOpacity=0.05;fillColor=#FFF9B2;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;gradientColor=#FFF2A1;shadow=1;size=20;pointerEvents=1;" vertex="1" parent="1">
+          <mxGeometry x="695" y="-282" width="140" height="160" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
