@@ -6,6 +6,7 @@ This project's [ER diagram](<ER Diagram.drawio>) was made through [draw.io](http
 - Genre: id
 - User: id
 - Person: id
+- Role: role
 - Award: (name, year)
 - Location: (name, city, country)
 #### Key Constraints
