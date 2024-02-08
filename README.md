@@ -7,8 +7,12 @@ This project's [ER diagram](<ER Diagram.drawio>) was made through [draw.io](http
 - User: id
 - Person: id
 - Role: role
-- Award: (name, year)
+- Award: name
 - Location: (name, city, country)
+#### Candidate Keys
+- Motion Picture: potentially some combination of (name, production, release date)
+- Genre: name
+- User: potentially (email)
 #### Key Constraints
 - Movie, Series ISA Motion Picture: covering constraint (yes), overlap constraint (disallowed)
 #### Assumptions
