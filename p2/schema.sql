@@ -3,17 +3,17 @@ CREATE TABLE IF NOT EXISTS MotionPicture (
     name VARCHAR(255) NOT NULL,
     rating FLOAT NOT NULL,
     production VARCHAR(255) NOT NULL,
-    budget FLOAT NOT NULL,
+    budget FLOAT NOT NULL
 
-    --CONSTRAINT RatingBetween0And10 CHECK (rating >= 0 AND rating <= 10)
+    -- CONSTRAINT RatingBetween0And10 CHECK (rating >= 0 AND rating <= 10)
 );
 
 CREATE TABLE IF NOT EXISTS User (
     email VARCHAR(255) PRIMARY KEY NOT NULL,
     name VARCHAR(255) NOT NULL,
-    age INTEGER NOT NULL,
+    age INTEGER NOT NULL
 
-    --CONSTRAINT PositiveAge CHECK (age >= 0)
+    -- CONSTRAINT PositiveAge CHECK (age >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS Likes (
