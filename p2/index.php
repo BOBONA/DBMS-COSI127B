@@ -118,17 +118,17 @@
                 parent::__construct($it, self::LEAVES_ONLY);
             }
 
-            function current()
+            function current(): string
             {
                 return "<td style='text-align:center'>" . parent::current() . "</td>";
             }
 
-            function beginChildren()
+            function beginChildren(): void
             {
                 echo "<tr>";
             }
 
-            function endChildren()
+            function endChildren(): void
             {
                 echo "</tr>" . "\n";
             }
