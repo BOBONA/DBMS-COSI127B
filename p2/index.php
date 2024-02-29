@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -13,6 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COSI 127b</title>
 </head>
+
 <body>
     <div class="container">
         <h1 style="text-align:center">COSI 127b</h1><br>
@@ -32,14 +34,11 @@
         <h1>Guests</h1>
         <?php
         // we want to check if the submit button has been clicked (in our case, it is named Query)
-        if(isset($_POST['submitted']))
-        {
+        if (isset($_POST['submitted'])) {
             // set age limit to whatever input we get
             // ideally, we should do more validation to check for numbers, etc. 
-           $ageLimit = $_POST["inputAge"]; 
-        }
-        else
-        {
+            $ageLimit = $_POST["inputAge"];
+        } else {
             // if the button was not clicked, we can simply set age limit to 0 
             // in this case, we will return everything
             $ageLimit = 0;
@@ -51,23 +50,28 @@
 
         // initialize table headers
         // YOU WILL NEED TO CHANGE THIS DEPENDING ON TABLE YOU QUERY OR THE COLUMNS YOU RETURN
-         echo "<tr><th class='col-md-2'>Firstname</th><th class='col-md-2'>Lastname</th></tr></thead>";
+        echo "<tr><th class='col-md-2'>Firstname</th><th class='col-md-2'>Lastname</th></tr></thead>";
 
         // generic table builder. It will automatically build table data rows irrespective of result
-        class TableRows extends RecursiveIteratorIterator {
-            function __construct($it) {
+        class TableRows extends RecursiveIteratorIterator
+        {
+            function __construct($it)
+            {
                 parent::__construct($it, self::LEAVES_ONLY);
             }
 
-            function current() {
-                return "<td style='text-align:center'>" . parent::current(). "</td>";
+            function current()
+            {
+                return "<td style='text-align:center'>" . parent::current() . "</td>";
             }
 
-            function beginChildren() {
+            function beginChildren()
+            {
                 echo "<tr>";
             }
 
-            function endChildren() {
+            function endChildren()
+            {
                 echo "</tr>" . "\n";
             }
         }
@@ -95,19 +99,19 @@
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
             // for each row that we fetched, use the iterator to build a table row on front-end
-            foreach(new TableRows(new RecursiveArrayIterator($stmt->fetchAll())) as $k=>$v) {
+            foreach (new TableRows(new RecursiveArrayIterator($stmt->fetchAll())) as $k => $v) {
                 echo $v;
             }
-        }
-        catch(PDOException $e) {
+        } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
         }
         echo "</table>";
         // destroy our connection
         $conn = null;
-    
-    ?>
+
+        ?>
 
     </div>
 </body>
+
 </html>

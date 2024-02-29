@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS MotionPicture (
     production VARCHAR(255) NOT NULL,
     budget FLOAT NOT NULL,
 
-    CONSTRAINT RatingBetween0And10 CHECK (rating >= 0 AND rating <= 10),
+    CONSTRAINT RatingBetween0And10 CHECK (rating >= 0 AND rating <= 10)
 );
 
 CREATE TABLE IF NOT EXISTS User (
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS User (
     name VARCHAR(255) NOT NULL,
     age INTEGER NOT NULL,
 
-    CONSTRAINT PositiveAge CHECK (age >= 0),
+    CONSTRAINT PositiveAge CHECK (age >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS Likes (
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Likes (
 
     PRIMARY KEY (uemail, mpid),
     FOREIGN KEY (uemail) REFERENCES User(email),
-    FOREIGN KEY (mpid) REFERENCES MotionPicture(id),
+    FOREIGN KEY (mpid) REFERENCES MotionPicture(id)
 );
 
 CREATE TABLE IF NOT EXISTS Movie (
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS Movie (
     boxoffice_collection INTEGER NOT NULL,
 
     PRIMARY KEY (mpid),
-    FOREIGN KEY (mpid) REFERENCES MotionPicture(id),
+    FOREIGN KEY (mpid) REFERENCES MotionPicture(id)
 );
 
 CREATE TABLE IF NOT EXISTS Series (
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS Series (
     season_count INTEGER NOT NULL,
 
     PRIMARY KEY (mpid),
-    FOREIGN KEY (mpid) REFERENCES MotionPicture(id),
+    FOREIGN KEY (mpid) REFERENCES MotionPicture(id)
 );
 
 CREATE TABLE IF NOT EXISTS People (
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS People (
     name VARCHAR(255) NOT NULL,
     nationality VARCHAR(255) NOT NULL,
     dob DATE NOT NULL,
-    gender VARCHAR(32) NOT NULL,
+    gender VARCHAR(32) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Role (
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS Role (
 
     PRIMARY KEY (mpid, pid, role_name),
     FOREIGN KEY (mpid) REFERENCES MotionPicture(id),
-    FOREIGN KEY (pid) REFERENCES People(id),
+    FOREIGN KEY (pid) REFERENCES People(id)
 );
 
 CREATE TABLE IF NOT EXISTS Award (
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS Award (
 
     PRIMARY KEY (mpid, pid, award_name, award_year),
     FOREIGN KEY (mpid) REFERENCES MotionPicture(id),
-    FOREIGN KEY (pid) REFERENCES People(id),
+    FOREIGN KEY (pid) REFERENCES People(id)
 );
 
 CREATE TABLE IF NOT EXISTS Genre (
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS Genre (
     genre_name VARCHAR(32) NOT NULL,
 
     PRIMARY KEY (mpid, genre_name),
-    FOREIGN KEY (mpid) REFERENCES MotionPicture(id),
+    FOREIGN KEY (mpid) REFERENCES MotionPicture(id)
 );
 
 CREATE TABLE IF NOT EXISTS Location (
@@ -85,5 +85,5 @@ CREATE TABLE IF NOT EXISTS Location (
     country VARCHAR(64) NOT NULL,
 
     PRIMARY KEY (mpid, zip),
-    FOREIGN KEY (mpid) REFERENCES MotionPicture(id),
+    FOREIGN KEY (mpid) REFERENCES MotionPicture(id)
 );
