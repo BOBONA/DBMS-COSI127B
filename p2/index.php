@@ -3,12 +3,12 @@
 
 <head>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <!-- Bootstrap JS dependencies -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,16 +20,33 @@
         <h1 style="text-align:center">COSI 127b</h1><br>
         <h3 style="text-align:center">Connecting Front-End to MySQL DB</h3><br>
     </div>
+
     <div class="container">
-        <form id="ageLimitForm" method="post" action="index.php">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Enter minimum age" name="inputAge" id="inputAge">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" name="submitted" id="button-addon2">Query</button>
-                </div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="motion-picture-tab" data-bs-toggle="tab" data-bs-target="#motion-picture-search" type="button" role="tab" aria-controls="motion-picture-search" aria-selected="true">Motion Pictures</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="actor-tab" data-bs-toggle="tab" data-bs-target="#actor-search" type="button" role="tab" aria-controls="actor-search" aria-selected="false">Actors</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="motion-picture-search" role="tabpanel" aria-labelledby="motion-picture-search-tab" tabindex="0">
+                <form id="ageLimitForm" method="post" action="index.php">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Title" name="title">
+                        <input type="text" class="form-control" placeholder="Genre" name="genre">
+                        
+                        <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
+                    </div>
+                </form>
             </div>
-        </form>
+            <div class="tab-pane fade" id="actor-search" role="tabpanel" aria-labelledby="actor-search-tab" tabindex="0">
+                
+            </div>
+        </div>
     </div>
+
     <div class="container">
         <h1>Guests</h1>
         <?php
