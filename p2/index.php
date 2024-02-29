@@ -17,8 +17,8 @@
 
 <body>
     <div class="container">
-        <h1 style="text-align:center">COSI 127b</h1><br>
-        <h3 style="text-align:center">Connecting Front-End to MySQL DB</h3><br>
+        <h1 style="text-align:center">COSI 127b</h1>
+        <h3 style="text-align:center">IMDB "Clone"</h3>
     </div>
 
     <div class="container">
@@ -27,32 +27,60 @@
                 <button class="nav-link active" id="motion-picture-tab" data-bs-toggle="tab" data-bs-target="#motion-picture-search" type="button" role="tab" aria-controls="motion-picture-search" aria-selected="true">Motion Pictures</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="actor-tab" data-bs-toggle="tab" data-bs-target="#actor-search" type="button" role="tab" aria-controls="actor-search" aria-selected="false">Actors</button>
+                <button class="nav-link" id="people-tab" data-bs-toggle="tab" data-bs-target="#people-search" type="button" role="tab" aria-controls="people-search" aria-selected="false">People</button>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="motion-picture-search" role="tabpanel" aria-labelledby="motion-picture-search-tab" tabindex="0">
                 <form id="motion-picture-form" method="post" action="index.php">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="title" placeholder="Title" name="title">
-                        <input type="text" class="form-control" id="genre" placeholder="Genre" name="genre">
+                        <span class="input-group-text">Title</span>
+                        <input type="text" class="form-control" id="title" placeholder="" name="title">
 
-                        <span class="input-group-text">Rating from</span>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Type</button>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item form-check">
+                                <input class="form-check-input mx-1" type="checkbox" value="" id="flexCheckDefault" name="search-movies">
+                                <label class="form-check-label" for="flexCheckDefault">Movie</label>
+                            </li>
+                            <li class="dropdown-item form-check">
+                                <input class="form-check-input mx-1" type="checkbox" value="" id="flexCheckDefault" name="search-tv-shows">
+                                <label class="form-check-label" for="flexCheckDefault">TV Show</label>
+                            </li>
+                        </ul>
+
+                        <span class="input-group-text">Genre</span>
+                        <input type="text" class="form-control" id="genre" placeholder="" name="genre">
+
+                        <span class="input-group-text">Rated from</span>
                         <input type="number" class="form-control" placeholder="1" name="rating-start">
                         <span class="input-group-text">to</span>
                         <input type="number" class="form-control" placeholder="10" name="rating-end">
+
+                        <span class="input-group-text">Production</span>
+                        <input type="text" class="form-control" id="title" placeholder="" name="production">
 
                         <input type="hidden" value="motion-picture-search" name="query">
                         <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade" id="actor-search" role="tabpanel" aria-labelledby="actor-search-tab" tabindex="0">
-                <form id="actor-form" method="post" action="index.php">
+            <div class="tab-pane fade" id="people-search" role="tabpanel" aria-labelledby="people-search-tab" tabindex="0">
+                <form id="people-form" method="post" action="index.php">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                        <span class="input-group-text">Name</span>
+                        <input type="text" class="form-control" id="name" placeholder="" name="name">
 
-                        <input type="hidden" value="actor-search" name="query">
+                        <span class="input-group-text">Worked in</span>
+                        <input type="text" class="form-control" placeholder="" name="role">
+
+                        <span class="input-group-text">Role</span>
+                        <input type="text" class="form-control" placeholder="" name="role">
+
+                        <span class="input-group-text">Award</span>
+                        <input type="text" class="form-control" placeholder="" name="award">
+
+                        <input type="hidden" value="people-search" name="query">
                         <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
                     </div>
                 </form>
