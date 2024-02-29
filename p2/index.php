@@ -26,33 +26,35 @@
     <h3 style="text-align:center">IMDB "Clone"</h3>
 </div>
 
-<container>
-
-</container>
+<div class="container">
+    <div class="input-group mb-3">
+        <span class="input-group-text">Email</span>
+        <input type="text" class="form-control" placeholder="" id="email" name="email"
+               oninput="setEmailFields(this.value)">
+    </div>
+</div>
 
 <div class="container">
-    <form id="submit-form" method="post" action="index.php">
-        <div class="input-group mb-3">
-            <span class="input-group-text">Email</span>
-            <input type="text" class="form-control" placeholder="" name="email">
-        </div>
-
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="motion-picture-tab" data-bs-toggle="tab"
-                        data-bs-target="#motion-picture-search" type="button" role="tab"
-                        aria-controls="motion-picture-search" aria-selected="true">Motion Pictures
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="people-tab" data-bs-toggle="tab" data-bs-target="#people-search"
-                        type="button" role="tab" aria-controls="people-search" aria-selected="false">People
-                </button>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="motion-picture-search" role="tabpanel"
-                 aria-labelledby="motion-picture-search-tab" tabindex="0">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "motion-picture") echo "active" ?>"
+                    id="motion-picture-tab" data-bs-toggle="tab"
+                    data-bs-target="#motion-picture-search" type="button" role="tab"
+                    aria-controls="motion-picture-search" onclick="setTab('motion-picture')">Motion Pictures
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link <?php if ($_GET["tab"] == "people") echo "active" ?>"
+                    id="people-tab" data-bs-toggle="tab" data-bs-target="#people-search"
+                    type="button" role="tab" aria-controls="people-search" onclick="setTab('people')">People
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "motion-picture") echo "show active" ?>"
+             id="motion-picture-search" role="tabpanel"
+             aria-labelledby="motion-picture-search-tab" tabindex="0">
+            <form method="post" action="index.php">
                 <div class="input-group mb-3">
                     <span class="input-group-text">Title</span>
                     <input type="text" class="form-control" id="title" placeholder="" name="title">
@@ -84,12 +86,18 @@
                     <span class="input-group-text">Production</span>
                     <input type="text" class="form-control" id="title" placeholder="" name="production">
 
+                    <input type="hidden" id="motion-picture-search-email" value="" name="email">
+
                     <input type="hidden" value="motion-picture-search" name="query">
-                    <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
+                    <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted">Search
+                    </button>
                 </div>
-            </div>
-            <div class="tab-pane fade" id="people-search" role="tabpanel" aria-labelledby="people-search-tab"
-                 tabindex="0">
+            </form>
+        </div>
+        <div class="tab-pane fade <?php if (isset($_GET["tab"]) && $_GET["tab"] == "people") echo "show active" ?>"
+             id="people-search" role="tabpanel" aria-labelledby="people-search-tab"
+             tabindex="0">
+            <form method="post" action="index.php">
                 <div class="input-group mb-3">
                     <span class="input-group-text">Name</span>
                     <input type="text" class="form-control" id="name" placeholder="" name="name">
@@ -103,12 +111,14 @@
                     <span class="input-group-text">Award</span>
                     <input type="text" class="form-control" placeholder="" name="award">
 
+                    <input type="hidden" id="people-search-email" value="" name="email">
+
                     <input type="hidden" value="people-search" name="query">
-                    <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
+                    <button class="btn btn-outline-secondary" type="submit" name="people-submitted">Search</button>
                 </div>
-            </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 <div class="container">
@@ -193,6 +203,23 @@
     ?>
 
 </div>
+
+<script>
+    setEmailFields(localStorage.getItem("email"));
+
+    function setEmailFields(value) {
+        if (document.getElementById("email").value !== value)
+            document.getElementById("email").value = value;
+        document.getElementById("motion-picture-search-email").value = value;
+        document.getElementById("people-search-email").value = value;
+        localStorage.setItem("email", value);
+    }
+
+    function setTab(value) {
+        history.pushState({}, "", window.location.pathname + "?tab=" + value)
+    }
+</script>
+
 </body>
 
 </html>
