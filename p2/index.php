@@ -32,17 +32,30 @@
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="motion-picture-search" role="tabpanel" aria-labelledby="motion-picture-search-tab" tabindex="0">
-                <form id="ageLimitForm" method="post" action="index.php">
+                <form id="motion-picture-form" method="post" action="index.php">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Title" name="title">
-                        <input type="text" class="form-control" placeholder="Genre" name="genre">
-                        
+                        <input type="text" class="form-control" id="title" placeholder="Title" name="title">
+                        <input type="text" class="form-control" id="genre" placeholder="Genre" name="genre">
+
+                        <span class="input-group-text">Rating from</span>
+                        <input type="number" class="form-control" placeholder="1" name="rating-start">
+                        <span class="input-group-text">to</span>
+                        <input type="number" class="form-control" placeholder="10" name="rating-end">
+
+                        <input type="hidden" value="motion-picture-search" name="query">
                         <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
                     </div>
                 </form>
             </div>
             <div class="tab-pane fade" id="actor-search" role="tabpanel" aria-labelledby="actor-search-tab" tabindex="0">
-                
+                <form id="actor-form" method="post" action="index.php">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+
+                        <input type="hidden" value="actor-search" name="query">
+                        <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
