@@ -44,7 +44,7 @@
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link <?php if ($_GET["tab"] == "people") echo "active" ?>"
+            <button class="nav-link <?php if (isset($_GET["tab"]) && $_GET["tab"] == "people") echo "active" ?>"
                     id="people-tab" data-bs-toggle="tab" data-bs-target="#people-search"
                     type="button" role="tab" aria-controls="people-search" onclick="setTab('people')">People
             </button>
