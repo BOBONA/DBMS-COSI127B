@@ -88,7 +88,7 @@
 
                     <input type="hidden" id="motion-picture-search-email" value="" name="email">
 
-                    <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted">Search
+                    <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted" formaction="?tab=motion-picture">Search
                     </button>
                 </div>
             </form>
@@ -112,7 +112,7 @@
 
                     <input type="hidden" id="people-search-email" value="" name="email">
 
-                    <button class="btn btn-outline-secondary" type="submit" name="people-submitted">Search</button>
+                    <button class="btn btn-outline-secondary" type="submit" name="people-submitted" formaction="?tab=people">Search</button>
                 </div>
             </form>
         </div>
@@ -256,6 +256,16 @@
             $qb->where("M.name LIKE :title");
             $qb->params[':title'] = "%" . $_POST['title'] . "%";
         }
+
+        // Check if the movie and/or tv show checkboxes are checked
+        if (!isset($_POST['search-movies']) || !isset($_POST['search-tv-shows'])) {
+            if (isset($_POST['search-movies'])) {
+                $qb->innerJoin('Movie', 'M.id = Movie.mpid');
+            } else if (isset($_POST['search-tv-shows'])) {
+                $qb->innerJoin('Series', 'M.id = Series.mpid');
+            }
+        }
+
         if (!empty($_POST['genre'])) {
             $qb->where('G.genre_name LIKE :genre');
             $qb->params[':genre'] = "%" . $_POST['genre'] . "%";
@@ -267,6 +277,11 @@
         if (!empty($_POST['rating-end'])) {
             $qb->where("M.rating <= :rating_end");
             $qb->params[':rating_end'] = intval($_POST['rating-end']);
+        }
+
+        if (!empty($_POST['production'])) {
+            $qb->where("M.production LIKE :production");
+            $qb->params[':production'] = "%" . $_POST['production'] . "%";
         }
 
         $query = $qb->build();
