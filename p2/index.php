@@ -88,7 +88,8 @@
 
                     <input type="hidden" id="motion-picture-search-email" value="" name="email">
 
-                    <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted" formaction="?tab=motion-picture">Search
+                    <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted"
+                            formaction="?tab=motion-picture">Search
                     </button>
                 </div>
             </form>
@@ -112,7 +113,9 @@
 
                     <input type="hidden" id="people-search-email" value="" name="email">
 
-                    <button class="btn btn-outline-secondary" type="submit" name="people-submitted" formaction="?tab=people">Search</button>
+                    <button class="btn btn-outline-secondary" type="submit" name="people-submitted"
+                            formaction="?tab=people">Search
+                    </button>
                 </div>
             </form>
         </div>
@@ -153,6 +156,8 @@
         private string $from = '';
         private array $joins = [];
         private array $where = [];
+        private string $groupBy = '';
+        private array $groups = [];
         public array $params = [];
         private PDO $conn;
 
@@ -167,6 +172,8 @@
             $this->from = '';
             $this->joins = [];
             $this->where = [];
+            $this->groupBy = '';
+            $this->groups = [];
             $this->params = [];
         }
 
@@ -212,9 +219,27 @@
             return $this;
         }
 
+        public function groupBy(string $column): self
+        {
+            $this->groupBy = $column;
+            return $this;
+        }
+
+        public function group(string $column, string $alias): self
+        {
+            $this->groups[$column] = $alias;
+            return $this;
+        }
+
         public function build(): PDOStatement
         {
+            $shouldGroup = count($this->groups) > 0 && !empty($this->groupBy);
+            $groupColumns = $shouldGroup ? ', ' . implode(', ', array_map(function($column, $alias) {
+                return "GROUP_CONCAT(DISTINCT $column SEPARATOR ', ') as $alias";
+            }, array_keys($this->groups), array_values($this->groups))) : '';
+
             $sql = 'SELECT ' . implode(', ', $this->select)
+                . $groupColumns
                 . ' FROM ' . $this->from
                 . implode(' ', $this->joins);
 
@@ -222,6 +247,12 @@
             if (count($this->where) > 0) {
                 $sql .= ' WHERE ' . implode(' AND ', $this->where);
             }
+
+            // handle the group by specifier
+            if (!empty($this->groupBy)) {
+                $sql .= ' GROUP BY ' . $this->groupBy;
+            }
+
             $sql .= ';';
 
             $query = $this->conn->prepare($sql);
@@ -278,7 +309,6 @@
             $qb->where("M.rating <= :rating_end");
             $qb->params[':rating_end'] = intval($_POST['rating-end']);
         }
-
         if (!empty($_POST['production'])) {
             $qb->where("M.production LIKE :production");
             $qb->params[':production'] = "%" . $_POST['production'] . "%";
@@ -293,11 +323,12 @@
                             <th class='col-md-2'>Genre</th>
                         </tr>";
     } else if (isset($_POST['people-submitted'])) {
-        $qb = $qb->select('P.name', 'P.nationality', 'P.dob', 'P.gender', 'R.role_name', 'M.name as movie_name', 'A.award_name')
+        $qb = $qb->select('P.name', 'P.nationality', 'P.dob', 'P.gender')
             ->from('People P')
-            ->leftJoin('Role R', 'P.id = R.pid')
-            ->leftJoin('MotionPicture M', 'R.mpid = M.id')
-            ->leftJoin('Award A', 'P.id = A.pid');
+            ->groupBy('P.id')
+            ->leftJoin('Role R', 'P.id = R.pid')->group('R.role_name', 'roles')
+            ->leftJoin('MotionPicture M', 'R.mpid = M.id')->group('M.name', 'motion_pictures')
+            ->leftJoin('Award A', 'P.id = A.pid')->group('A.award_name', 'awards');
         if (!empty($_POST['name'])) {
             $qb->where("P.name LIKE :name");
             $qb->params[':name'] = "%" . $_POST['name'] . "%";
@@ -321,9 +352,9 @@
                             <th class='col-md-2'>Nationality</th>
                             <th class='col-md-2'>DOB</th>
                             <th class='col-md-2'>Gender</th>
-                            <th class='col-md-2'>Role</th>
-                            <th class='col-md-2'>Movie</th>
-                            <th class='col-md-2'>Award</th>
+                            <th class='col-md-2'>Roles</th>
+                            <th class='col-md-2'>Motion Pictures</th>
+                            <th class='col-md-2'>Awards</th>
                         </tr>";
     } else {
         $query = $conn->prepare("SELECT * FROM MotionPicture;");
