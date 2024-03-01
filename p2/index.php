@@ -3,12 +3,17 @@
 
 <head>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <!-- Bootstrap JS dependencies -->
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+            integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,132 +21,302 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1 style="text-align:center">COSI 127b</h1><br>
-        <h3 style="text-align:center">Connecting Front-End to MySQL DB</h3><br>
-    </div>
+<div class="container">
+    <h1 style="text-align:center">COSI 127b</h1><br>
+    <h3 style="text-align:center">Connecting Front-End to MySQL DB</h3><br>
+</div>
 
-    <div class="container">
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="motion-picture-tab" data-bs-toggle="tab" data-bs-target="#motion-picture-search" type="button" role="tab" aria-controls="motion-picture-search" aria-selected="true">Motion Pictures</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="actor-tab" data-bs-toggle="tab" data-bs-target="#actor-search" type="button" role="tab" aria-controls="actor-search" aria-selected="false">Actors</button>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="motion-picture-search" role="tabpanel" aria-labelledby="motion-picture-search-tab" tabindex="0">
-                <form id="motion-picture-form" method="post" action="index.php">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="title" placeholder="Title" name="title">
-                        <input type="text" class="form-control" id="genre" placeholder="Genre" name="genre">
+<div class="container">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="motion-picture-tab" data-bs-toggle="tab"
+                    data-bs-target="#motion-picture-search" type="button" role="tab"
+                    aria-controls="motion-picture-search" aria-selected="true">Motion Pictures
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="actor-tab" data-bs-toggle="tab" data-bs-target="#actor-search" type="button"
+                    role="tab" aria-controls="actor-search" aria-selected="false">Actors
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="motion-picture-search" role="tabpanel"
+             aria-labelledby="motion-picture-search-tab" tabindex="0">
+            <form id="motion-picture-form" method="post" action="index.php">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="title" value="The Matrix" placeholder="Title"
+                           name="title">
+                    <input type="text" class="form-control" id="genre" placeholder="Genre" value="Action" name="genre">
 
-                        <span class="input-group-text">Rating from</span>
-                        <input type="number" class="form-control" placeholder="1" name="rating-start">
-                        <span class="input-group-text">to</span>
-                        <input type="number" class="form-control" placeholder="10" name="rating-end">
+                    <span class="input-group-text">Rating from</span>
+                    <input type="number" class="form-control" placeholder="1" name="rating-start">
+                    <span class="input-group-text">to</span>
+                    <input type="number" class="form-control" placeholder="10" name="rating-end">
 
-                        <input type="hidden" value="motion-picture-search" name="query">
-                        <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
-                    </div>
-                </form>
-            </div>
-            <div class="tab-pane fade" id="actor-search" role="tabpanel" aria-labelledby="actor-search-tab" tabindex="0">
-                <form id="actor-form" method="post" action="index.php">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                    <input type="hidden" value="motion-picture-search" name="query">
+                    <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="actor-search" role="tabpanel" aria-labelledby="actor-search-tab" tabindex="0">
+            <form id="actor-form" method="post" action="index.php">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="name" placeholder="Name" name="name">
 
-                        <input type="hidden" value="actor-search" name="query">
-                        <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
-                    </div>
-                </form>
-            </div>
+                    <input type="hidden" value="actor-search" name="query">
+                    <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <div class="container">
-        <h1>Guests</h1>
-        <?php
-        // we want to check if the submit button has been clicked (in our case, it is named Query)
-        if (isset($_POST['submitted'])) {
-            // set age limit to whatever input we get
-            // ideally, we should do more validation to check for numbers, etc. 
-            $ageLimit = $_POST["inputAge"];
-        } else {
-            // if the button was not clicked, we can simply set age limit to 0 
-            // in this case, we will return everything
-            $ageLimit = 0;
-        }
+<div class="container">
+    <h1>Guests</h1>
+    <?php
+    function dbg($var)
+    {
+        echo "<pre>";
+        var_dump($var);
+        echo "</pre>";
+    }
+    // TODO: DEBUGGING, REMOVE LATER
+    dbg($_POST);
 
-        // we will now create a table from PHP side 
-        echo "<table class='table table-md table-bordered'>";
-        echo "<thead class='thead-dark' style='text-align: center'>";
+    // SQL CONNECTIONS
+    $servername = "127.0.0.1";
+    $username = "root";
+    $password = "";
+    $dbname = "COSI127b";
 
-        // initialize table headers
-        // YOU WILL NEED TO CHANGE THIS DEPENDING ON TABLE YOU QUERY OR THE COLUMNS YOU RETURN
-        echo "<tr><th class='col-md-2'>Firstname</th><th class='col-md-2'>Lastname</th></tr></thead>";
+    // Create ORM connection
+    try {
+        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    } catch (PDOException $err) {
+        echo "error creating pdo " . $err->getMessage();
+        return;
+    }
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // generic table builder. It will automatically build table data rows irrespective of result
-        class TableRows extends RecursiveIteratorIterator
+    class QueryBuilder
+    {
+        private array $select = [];
+        private string $from = '';
+        private array $joins = [];
+        private array $where = [];
+        public array $params = [];
+        private PDO $conn;
+
+        public function __construct(PDO $conn)
         {
-            function __construct($it)
-            {
-                parent::__construct($it, self::LEAVES_ONLY);
-            }
-
-            function current(): string
-            {
-                return "<td style='text-align:center'>" . parent::current() . "</td>";
-            }
-
-            function beginChildren(): void
-            {
-                echo "<tr>";
-            }
-
-            function endChildren(): void
-            {
-                echo "</tr>" . "\n";
-            }
+            $this->conn = $conn;
         }
 
-        // SQL CONNECTIONS
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "COSI127b";
-
-        try {
-            // We will use PDO to connect to MySQL DB. This part need not be 
-            // replicated if we are having multiple queries. 
-            // initialize connection and set attributes for errors/exceptions
-            $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // prepare statement for executions. This part needs to change for every query
-            $stmt = $conn->prepare("SELECT first_name, last_name FROM guests where age>=$ageLimit");
-
-            // execute statement
-            $stmt->execute();
-
-            // set the resulting array to associative. 
-            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-
-            // for each row that we fetched, use the iterator to build a table row on front-end
-            foreach (new TableRows(new RecursiveArrayIterator($stmt->fetchAll())) as $k => $v) {
-                echo $v;
-            }
-        } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+        public function reset(): void
+        {
+            $this->select = [];
+            $this->from = '';
+            $this->joins = [];
+            $this->where = [];
+            $this->params = [];
         }
-        echo "</table>";
-        // destroy our connection
-        $conn = null;
 
-        ?>
+        public function select(...$columns): self
+        {
+            $this->select = $columns;
+            return $this;
+        }
 
-    </div>
+        public function from(string $table): self
+        {
+            $this->from = $table;
+            return $this;
+        }
+
+        public function leftJoin(string $table, string $condition): self
+        {
+            $this->joins[] = " LEFT JOIN $table ON $condition ";
+            return $this;
+        }
+
+        public function rightJoin(string $table, string $condition): self
+        {
+            $this->joins[] = " RIGHT JOIN $table ON $condition ";
+            return $this;
+        }
+
+        public function innerJoin(string $table, string $condition): self
+        {
+            $this->joins[] = " INNER JOIN $table ON $condition ";
+            return $this;
+        }
+
+        public function outerJoin(string $table, string $condition): self
+        {
+            $this->joins[] = " OUTER JOIN $table ON $condition ";
+            return $this;
+        }
+
+        public function where(string $condition): self
+        {
+            $this->where[] = $condition;
+            return $this;
+        }
+
+        public function build(): PDOStatement
+        {
+            $sql = 'SELECT ' . implode(', ', $this->select)
+                . ' FROM ' . $this->from
+                . implode(' ', $this->joins);
+
+            // append all WHEREs joined by AND
+            if (count($this->where) > 0) {
+                $sql .= ' WHERE ' . implode(' AND ', $this->where);
+            }
+            $sql .= ';';
+
+            $query = $this->conn->prepare($sql);
+            dbg($this->params);
+            foreach ($this->params as $param => $value) {
+                if (is_int($value)) {
+                    $type = PDO::PARAM_INT;
+                } elseif (is_bool($value)) {
+                    $type = PDO::PARAM_BOOL;
+                } elseif (is_null($value)) {
+                    $type = PDO::PARAM_NULL;
+                } else {
+                    $type = PDO::PARAM_STR;
+                }
+                // can't pass $value directly because bindParam requires a reference, so we pass $this->params[$param]
+                $query->bindParam($param, $this->params[$param], $type);
+            }
+
+            return $query;
+
+        }
+    }
+
+    $qb = new QueryBuilder($conn);
+    // Check if the submit button has been clicked
+    if (isset($_POST['submitted'])) {
+        // assign the correct $query and $table_header based on the form that was submitted
+        switch ($_POST["query"]) {
+            case "motion-picture-search" :
+                $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget', "G.genre_name")
+                    ->from('MotionPicture M')
+                    ->leftJoin('Genre G', 'M.id = G.mpid');
+
+                if (!empty($_POST['title'])) {
+                    $qb->where("M.name LIKE :title");
+                    $qb->params[':title'] = "%" . $_POST['title'] . "%";
+                }
+                if (!empty($_POST['genre'])) {
+                    $qb->where('G.genre_name LIKE :genre');
+                    $qb->params[':genre'] = "%" . $_POST['genre'] . "%";
+                }
+                if (!empty($_POST['rating-start'])) {
+                    $qb->where("M.rating >= :rating_start");
+                    $qb->params[':rating_start'] = intval($_POST['rating-start']);
+                }
+                if (!empty($_POST['rating-end'])) {
+                    $qb->where("M.rating <= :rating_end");
+                    $qb->params[':rating_end'] = intval($_POST['rating-end']);
+                }
+
+                $query = $qb->build();
+                $table_header = "<tr>
+                                    <th class='col-md-2'>Name</th>
+                                    <th class='col-md-2'>Rating</th>
+                                    <th class='col-md-2'>Production</th>
+                                    <th class='col-md-2'>Budget</th>
+                                    <th class='col-md-2'>Genre</th>
+                                </tr>";
+                break;
+            case "actor-search":
+                $query = $conn->prepare("SELECT * FROM People;");
+                $table_header = "<tr>
+                                    <th class='col-md-2'>ID</th>
+                                    <th class='col-md-2'>Name</th>
+                                    <th class='col-md-2'>Nationality</th>
+                                    <th class='col-md-2'>DOB</th>
+                                    <th class='col-md-2'>Gender</th>
+                                </tr>";
+                break;
+            default:
+                $query = $conn->prepare("SELECT * FROM MotionPicture;");
+                $table_header = "<tr>
+                                    <th class='col-md-2'>ID</th>
+                                    <th class='col-md-2'>Name</th>
+                                    <th class='col-md-2'>Rating</th>
+                                    <th class='col-md-2'>Production</th>
+                                    <th class='col-md-2'>Budget</th>
+                                 </tr>";
+                break;
+        }
+    } else {
+        $query = $conn->prepare("SELECT * FROM MotionPicture;");
+        $table_header = "<tr>
+                            <th class='col-md-2'>ID</th>
+                            <th class='col-md-2'>Name</th>
+                            <th class='col-md-2'>Rating</th>
+                            <th class='col-md-2'>Production</th>
+                            <th class='col-md-2'>Budget</th>
+                         </tr>";
+    }
+
+    // We will now create a table from PHP side
+    echo "<table class='table table-md table-bordered'>";
+    echo "<thead class='thead-dark' style='text-align: center'>";
+    echo $table_header;
+    echo "</thead>";
+    echo "<tbody>";
+
+    // Generic table builder. It will automatically build table data rows irrespective of result
+    class TableRows extends RecursiveIteratorIterator
+    {
+        function __construct($it)
+        {
+            parent::__construct($it, self::LEAVES_ONLY);
+        }
+
+        function current(): string
+        {
+            return "<td style='text-align:center'>" . parent::current() . "</td>";
+        }
+
+        function beginChildren(): void
+        {
+            echo "<tr>";
+        }
+
+        function endChildren(): void
+        {
+            echo "</tr>" . "\n";
+        }
+    }
+
+
+    try {
+        dbg($query);
+        $query->execute();
+        // when fetching, we want to fetch as an associative array that only contains column names, not column names and indexes
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+
+        // For each row that we fetched, use the iterator to build a table row on front-end
+        foreach (new TableRows(new RecursiveArrayIterator($query->fetchAll())) as $k => $v) {
+            echo $v;
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage() . "<br>" . $e->getTraceAsString() . "<br>" . $e->getPrevious();
+    }
+
+    echo "</tbody>";
+    echo "</table>";
+
+    // Destroy our connection
+    $conn = null;
+    ?>
+</div>
 </body>
-
 </html>
