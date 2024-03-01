@@ -22,50 +22,97 @@
 
 <body>
 <div class="container">
-    <h1 style="text-align:center">COSI 127b</h1><br>
-    <h3 style="text-align:center">Connecting Front-End to MySQL DB</h3><br>
+    <h1 style="text-align:center">COSI 127b</h1>
+    <h3 style="text-align:center">IMDB "Clone"</h3>
+</div>
+
+<div class="container">
+    <div class="input-group mb-3">
+        <span class="input-group-text">Email</span>
+        <input type="text" class="form-control" placeholder="" id="email" name="email"
+               oninput="setEmailFields(this.value)">
+    </div>
 </div>
 
 <div class="container">
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="motion-picture-tab" data-bs-toggle="tab"
+            <button class="nav-link <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "motion-picture") echo "active" ?>"
+                    id="motion-picture-tab" data-bs-toggle="tab"
                     data-bs-target="#motion-picture-search" type="button" role="tab"
-                    aria-controls="motion-picture-search" aria-selected="true">Motion Pictures
+                    aria-controls="motion-picture-search" onclick="setTab('motion-picture')">Motion Pictures
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="actor-tab" data-bs-toggle="tab" data-bs-target="#actor-search" type="button"
-                    role="tab" aria-controls="actor-search" aria-selected="false">Actors
+            <button class="nav-link <?php if (isset($_GET["tab"]) && $_GET["tab"] == "people") echo "active" ?>"
+                    id="people-tab" data-bs-toggle="tab" data-bs-target="#people-search"
+                    type="button" role="tab" aria-controls="people-search" onclick="setTab('people')">People
             </button>
         </li>
     </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="motion-picture-search" role="tabpanel"
+    <div class="tab-content">
+        <div class="tab-pane fade <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "motion-picture") echo "show active" ?>"
+             id="motion-picture-search" role="tabpanel"
              aria-labelledby="motion-picture-search-tab" tabindex="0">
-            <form id="motion-picture-form" method="post" action="index.php">
+            <form method="post" action="index.php">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="title" value="The Matrix" placeholder="Title"
-                           name="title">
-                    <input type="text" class="form-control" id="genre" placeholder="Genre" value="Action" name="genre">
+                    <label for="title" class="input-group-text">Title</label>
+                    <input type="text" class="form-control" id="title" placeholder="" name="title">
 
-                    <span class="input-group-text">Rating from</span>
-                    <input type="number" class="form-control" placeholder="1" name="rating-start">
-                    <span class="input-group-text">to</span>
-                    <input type="number" class="form-control" placeholder="10" name="rating-end">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">Type
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item form-check">
+                            <input class="form-check-input mx-1" type="checkbox" value="" id="flexCheckDefault"
+                                   name="search-movies">
+                            <label class="form-check-label" for="flexCheckDefault">Movie</label>
+                        </li>
+                        <li class="dropdown-item form-check">
+                            <input class="form-check-input mx-1" type="checkbox" value="" id="flexCheckDefault"
+                                   name="search-tv-shows">
+                            <label class="form-check-label" for="flexCheckDefault">TV Show</label>
+                        </li>
+                    </ul>
 
-                    <input type="hidden" value="motion-picture-search" name="query">
-                    <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
+                    <label for="genre" class="input-group-text">Genre</label>
+                    <input type="text" class="form-control" id="genre" placeholder="" name="genre">
+
+                    <label for="rating-start" class="input-group-text">Rated from</label>
+                    <input type="number" class="form-control" placeholder="1" name="rating-start" id="rating-start">
+                    <label for="rating-end" class="input-group-text">to</label>
+                    <input type="number" class="form-control" placeholder="10" name="rating-end" id="rating-end">
+
+                    <label for="production" class="input-group-text">Production</label>
+                    <input type="text" class="form-control" id="title" placeholder="" name="production">
+
+                    <input type="hidden" id="motion-picture-search-email" value="" name="email">
+
+                    <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted">Search
+                    </button>
                 </div>
             </form>
         </div>
-        <div class="tab-pane fade" id="actor-search" role="tabpanel" aria-labelledby="actor-search-tab" tabindex="0">
-            <form id="actor-form" method="post" action="index.php">
+        <div class="tab-pane fade <?php if (isset($_GET["tab"]) && $_GET["tab"] == "people") echo "show active" ?>"
+             id="people-search" role="tabpanel" aria-labelledby="people-search-tab"
+             tabindex="1">
+            <form method="post" action="index.php">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                    <label for="name" class="input-group-text">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="" name="name">
 
-                    <input type="hidden" value="actor-search" name="query">
-                    <button class="btn btn-outline-secondary" type="submit" name="submitted">Search</button>
+                    <label for="worked-in" class="input-group-text">Worked in</label>
+                    <input type="text" class="form-control" placeholder="" name="worked-in" id="worked-in">
+
+                    <label for="role" class="input-group-text">Role</label>
+                    <input type="text" class="form-control" placeholder="" name="role" id="role">
+
+                    <label for="award" class="input-group-text">Award</label>
+                    <input type="text" class="form-control" placeholder="" name="award" id="award">
+
+                    <input type="hidden" id="people-search-email" value="" name="email">
+
+                    <button class="btn btn-outline-secondary" type="submit" name="people-submitted">Search</button>
                 </div>
             </form>
         </div>
@@ -75,12 +122,13 @@
 <div class="container">
     <h1>Guests</h1>
     <?php
-    function dbg($var)
+    function dbg($var): void
     {
         echo "<pre>";
         var_dump($var);
         echo "</pre>";
     }
+
     // TODO: DEBUGGING, REMOVE LATER
     dbg($_POST);
 
@@ -170,7 +218,7 @@
                 . ' FROM ' . $this->from
                 . implode(' ', $this->joins);
 
-            // append all WHEREs joined by AND
+            // append all `WHERE`s joined by `AND`
             if (count($this->where) > 0) {
                 $sql .= ' WHERE ' . implode(' AND ', $this->where);
             }
@@ -198,62 +246,70 @@
     }
 
     $qb = new QueryBuilder($conn);
-    // Check if the submit button has been clicked
-    if (isset($_POST['submitted'])) {
-        // assign the correct $query and $table_header based on the form that was submitted
-        switch ($_POST["query"]) {
-            case "motion-picture-search" :
-                $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget', "G.genre_name")
-                    ->from('MotionPicture M')
-                    ->leftJoin('Genre G', 'M.id = G.mpid');
+    // Handle submit buttons
+    if (isset($_POST['motion-picture-submitted'])) {
+        $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget', "G.genre_name")
+            ->from('MotionPicture M')
+            ->leftJoin('Genre G', 'M.id = G.mpid');
 
-                if (!empty($_POST['title'])) {
-                    $qb->where("M.name LIKE :title");
-                    $qb->params[':title'] = "%" . $_POST['title'] . "%";
-                }
-                if (!empty($_POST['genre'])) {
-                    $qb->where('G.genre_name LIKE :genre');
-                    $qb->params[':genre'] = "%" . $_POST['genre'] . "%";
-                }
-                if (!empty($_POST['rating-start'])) {
-                    $qb->where("M.rating >= :rating_start");
-                    $qb->params[':rating_start'] = intval($_POST['rating-start']);
-                }
-                if (!empty($_POST['rating-end'])) {
-                    $qb->where("M.rating <= :rating_end");
-                    $qb->params[':rating_end'] = intval($_POST['rating-end']);
-                }
-
-                $query = $qb->build();
-                $table_header = "<tr>
-                                    <th class='col-md-2'>Name</th>
-                                    <th class='col-md-2'>Rating</th>
-                                    <th class='col-md-2'>Production</th>
-                                    <th class='col-md-2'>Budget</th>
-                                    <th class='col-md-2'>Genre</th>
-                                </tr>";
-                break;
-            case "actor-search":
-                $query = $conn->prepare("SELECT * FROM People;");
-                $table_header = "<tr>
-                                    <th class='col-md-2'>ID</th>
-                                    <th class='col-md-2'>Name</th>
-                                    <th class='col-md-2'>Nationality</th>
-                                    <th class='col-md-2'>DOB</th>
-                                    <th class='col-md-2'>Gender</th>
-                                </tr>";
-                break;
-            default:
-                $query = $conn->prepare("SELECT * FROM MotionPicture;");
-                $table_header = "<tr>
-                                    <th class='col-md-2'>ID</th>
-                                    <th class='col-md-2'>Name</th>
-                                    <th class='col-md-2'>Rating</th>
-                                    <th class='col-md-2'>Production</th>
-                                    <th class='col-md-2'>Budget</th>
-                                 </tr>";
-                break;
+        if (!empty($_POST['title'])) {
+            $qb->where("M.name LIKE :title");
+            $qb->params[':title'] = "%" . $_POST['title'] . "%";
         }
+        if (!empty($_POST['genre'])) {
+            $qb->where('G.genre_name LIKE :genre');
+            $qb->params[':genre'] = "%" . $_POST['genre'] . "%";
+        }
+        if (!empty($_POST['rating-start'])) {
+            $qb->where("M.rating >= :rating_start");
+            $qb->params[':rating_start'] = intval($_POST['rating-start']);
+        }
+        if (!empty($_POST['rating-end'])) {
+            $qb->where("M.rating <= :rating_end");
+            $qb->params[':rating_end'] = intval($_POST['rating-end']);
+        }
+
+        $query = $qb->build();
+        $table_header = "<tr>
+                            <th class='col-md-2'>Name</th>
+                            <th class='col-md-2'>Rating</th>
+                            <th class='col-md-2'>Production</th>
+                            <th class='col-md-2'>Budget</th>
+                            <th class='col-md-2'>Genre</th>
+                        </tr>";
+    } else if (isset($_POST['people-submitted'])) {
+        $qb = $qb->select('P.name', 'P.nationality', 'P.dob', 'P.gender', 'R.role_name', 'M.name as movie_name', 'A.award_name')
+            ->from('People P')
+            ->leftJoin('Role R', 'P.id = R.pid')
+            ->leftJoin('MotionPicture M', 'R.mpid = M.id')
+            ->leftJoin('Award A', 'P.id = A.pid');
+        if (!empty($_POST['name'])) {
+            $qb->where("P.name LIKE :name");
+            $qb->params[':name'] = "%" . $_POST['name'] . "%";
+        }
+        if (!empty($_POST['worked-in'])) {
+            $qb->where("M.name LIKE :worked_in");
+            $qb->params[':worked_in'] = "%" . $_POST['worked-in'] . "%";
+        }
+        if (!empty($_POST['role'])) {
+            $qb->where("R.role_name LIKE :role");
+            $qb->params[':role'] = "%" . $_POST['role'] . "%";
+        }
+        if (!empty($_POST['award'])) {
+            $qb->where("A.award_name LIKE :award");
+            $qb->params[':award'] = "%" . $_POST['award'] . "%";
+        }
+
+        $query = $qb->build();
+        $table_header = "<tr>
+                            <th class='col-md-2'>Name</th>
+                            <th class='col-md-2'>Nationality</th>
+                            <th class='col-md-2'>DOB</th>
+                            <th class='col-md-2'>Gender</th>
+                            <th class='col-md-2'>Role</th>
+                            <th class='col-md-2'>Movie</th>
+                            <th class='col-md-2'>Award</th>
+                        </tr>";
     } else {
         $query = $conn->prepare("SELECT * FROM MotionPicture;");
         $table_header = "<tr>
@@ -318,5 +374,21 @@
     $conn = null;
     ?>
 </div>
+<script>
+    setEmailFields(localStorage.getItem("email"));
+
+    function setEmailFields(value) {
+        if (document.getElementById("email").value !== value)
+            document.getElementById("email").value = value;
+        document.getElementById("motion-picture-search-email").value = value;
+        document.getElementById("people-search-email").value = value;
+        localStorage.setItem("email", value);
+    }
+
+    function setTab(value) {
+        history.pushState({}, "", window.location.pathname + "?tab=" + value)
+    }
+</script>
+
 </body>
 </html>
