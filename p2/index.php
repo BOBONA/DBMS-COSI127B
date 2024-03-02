@@ -119,7 +119,8 @@
             <form method="post" action="index.php">
                 <div class="input-group mb-3">
                     <span class="input-group-text">Email</span>
-                    <input type="text" class="form-control" placeholder="" id="email" name="email" oninput="setEmailFields(this.value)">
+                    <input type="text" class="form-control" placeholder="" id="email" name="email"
+                           oninput="setEmailFields(this.value)">
 
                     <button class="btn btn-outline-secondary" type="submit" name="likes-submitted"
                             formaction="?tab=likes">Your likes
@@ -127,14 +128,14 @@
                 </div>
             </form>
             <form method="post" action="index.php"
-                  <div class="input-group mb-3">
-                      <span class="input-group-text">Motion picture</span>
-                      <input type="text" class="form-control" placeholder="Title" name="motion-picture">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Motion picture</span>
+                <input type="text" class="form-control" placeholder="Title" name="motion-picture">
 
-                      <button class="btn btn-outline-secondary" type="submit" name="toggle-like"
-                              formaction="?tab=likes">Like motion picture
-                      </button>
-                  </div>
+                <button class="btn btn-outline-secondary" type="submit" name="toggle-like"
+                        formaction="?tab=likes">Like motion picture
+                </button>
+            </div>
             </form>
         </div>
     </div>
@@ -251,9 +252,9 @@
         public function build(): PDOStatement
         {
             $shouldGroup = count($this->groups) > 0 && !empty($this->groupBy);
-            $groupColumns = $shouldGroup ? ', ' . implode(', ', array_map(function($column, $alias) {
-                return "GROUP_CONCAT(DISTINCT $column SEPARATOR ', ') as $alias";
-            }, array_keys($this->groups), array_values($this->groups))) : '';
+            $groupColumns = $shouldGroup ? ', ' . implode(', ', array_map(function ($column, $alias) {
+                    return "GROUP_CONCAT(DISTINCT $column SEPARATOR ', ') as $alias";
+                }, array_keys($this->groups), array_values($this->groups))) : '';
 
             $sql = 'SELECT ' . implode(', ', $this->select)
                 . $groupColumns
@@ -337,10 +338,9 @@
                             <th class='col-md-2'>Rating</th>
                             <th class='col-md-2'>Production</th>
                             <th class='col-md-2'>Budget</th>
-                            <th class='col-md-2'>Genre</th>
+                            <th class='col-md-2'>Genre(s)</th>
                         </tr>";
-    }
-    else if (isset($_POST['people-submitted'])) {
+    } else if (isset($_POST['people-submitted'])) {
         $qb = $qb->select('P.name', 'P.nationality', 'P.dob', 'P.gender')
             ->from('People P')
             ->groupBy('P.id')
@@ -374,9 +374,50 @@
                             <th class='col-md-2'>Motion Pictures</th>
                             <th class='col-md-2'>Awards</th>
                         </tr>";
-    }
-    else if (isset($_POST['like-submitted'])){}
-    else {
+    } else if (isset($_POST['likes-submitted'])) {
+//        <input type="text" class="form-control" placeholder="" id="email" name="email" oninput="setEmailFields(this.value)">
+        $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
+            ->from('MotionPicture M')
+            ->groupBy('M.id')
+            ->group('G.genre_name', 'genres')
+            ->leftJoin('Genre G', 'M.id = G.mpid')
+            ->leftJoin('Likes L', 'M.id = L.mpid')
+            ->where("L.uemail = :email");
+        $qb->params[':email'] = $_POST['email'];
+
+        $query = $qb->build();
+        $table_header = "<tr>
+                            <th class='col-md-2'>Name</th>
+                            <th class='col-md-2'>Rating</th>
+                            <th class='col-md-2'>Production</th>
+                            <th class='col-md-2'>Budget</th>
+                            <th class='col-md-2'>Genre(s)</th>
+                        </tr>";
+    } else if (isset($_POST['toggle-like'])) {
+        $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
+            ->from('MotionPicture M')
+            ->groupBy('M.id')
+            ->group('G.genre_name', 'genres')
+            ->leftJoin('Genre G', 'M.id = G.mpid')
+            ->leftJoin('Likes L', 'M.id = L.mpid')
+            ->where("L.uemail = :email");
+
+        if(empty($_POST['email']) || empty($_POST['motion-picture'])) {
+            echo "Please enter an email and a motion picture to like";
+            return;
+        }
+        $qb->params[':email'] = $_POST['email'];
+        $qb->params[':mpid'] = $_POST['motion-picture'];
+
+        $query = $qb->build();
+        $table_header = "<tr>
+                            <th class='col-md-2'>Name</th>
+                            <th class='col-md-2'>Rating</th>
+                            <th class='col-md-2'>Production</th>
+                            <th class='col-md-2'>Budget</th>
+                            <th class='col-md-2'>Genre(s)</th>
+                        </tr>";
+    } else {
         $query = $conn->prepare("SELECT * FROM MotionPicture;");
         $table_header = "<tr>
                             <th class='col-md-2'>ID</th>

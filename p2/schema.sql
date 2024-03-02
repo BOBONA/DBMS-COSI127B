@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `Role` (
     role_name VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (mpid, pid, role_name),
-    FOREIGN KEY (mpid) REFERENCES MotionPicture(id),
+    FOREIGN KEY (mpid)REFERENCES MotionPicture(id),
     FOREIGN KEY (pid) REFERENCES People(id)
 );
 
