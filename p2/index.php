@@ -340,11 +340,12 @@
                 $getMpid = $conn->prepare("SELECT id FROM MotionPicture WHERE name = :mpname");
                 $getMpid->bindParam(":mpname", $_POST['motion-picture']);
                 $getMpid->execute();
-                $mpid = $getMpid->fetch(PDO::FETCH_ASSOC)['id'];
+                $mpid = $getMpid->fetch(PDO::FETCH_ASSOC);
                 if (empty($mpid)) {
                     echo "Motion picture not found";
                     return;
                 }
+                $mpid = $mpid['id'];
 
                 $like = $conn->prepare("INSERT INTO Likes (uemail, mpid) VALUES (:email, :mpid);");
                 $like->bindParam(":email", $_POST['email']);
