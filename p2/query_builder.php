@@ -1,4 +1,5 @@
 <?php
+
 class QueryBuilder
 {
     private array $select = [];
@@ -83,7 +84,7 @@ class QueryBuilder
     public function build(): PDOStatement
     {
         $shouldGroup = count($this->groups) > 0 && !empty($this->groupBy);
-        $groupColumns = $shouldGroup ? ', ' . implode(', ', array_map(function($column, $alias) {
+        $groupColumns = $shouldGroup ? ', ' . implode(', ', array_map(function ($column, $alias) {
                 return "GROUP_CONCAT(DISTINCT $column SEPARATOR ', ') as $alias";
             }, array_keys($this->groups), array_values($this->groups))) : '';
 

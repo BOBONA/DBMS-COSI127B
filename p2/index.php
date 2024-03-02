@@ -21,6 +21,34 @@
 </head>
 
 <body>
+<script>
+    function setTab(value) {
+        history.pushState({}, "", window.location.pathname + "?tab=" + value)
+    }
+
+    console.log("hello");
+
+    // stop form from refreshing page and losing state
+    document.getElementsByName("form").forEach(function (form) {
+        console.log("hi")
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const searchParams = new URLSearchParams(formData).toString();
+            const action = form.getAttribute("formaction");
+            fetch(action, {
+                method: "POST",
+                body: searchParams,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(response => response.text()).then(text => {
+                document.querySelector("body").innerHTML = text;
+            });
+        });
+    });
+</script>
+
 <div class="container">
     <h1 style="text-align:center">COSI 127b</h1>
     <h3 style="text-align:center">IMDB "Clone"</h3>
@@ -128,15 +156,22 @@
             <form method="post" action="index.php">
                 <div class="input-group mb-3">
                     <label for="email" class="input-group-text">Email</label>
-                    <input type="text" class="form-control" id="email" name="email" value="<?php if (isset($_POST['email'])) echo $_POST['email'] ?>">
+                    <input type="text" class="form-control" id="email" name="email"
+                           value="<?php if (isset($_POST['email'])) echo $_POST['email'] ?>">
 
-                    <button class="btn btn-outline-secondary" type="submit" name="likes-submitted" formaction="?tab=likes">Your likes</button>
+                    <button class="btn btn-outline-secondary" type="submit" name="likes-submitted"
+                            formaction="?tab=likes">Your likes
+                    </button>
                 </div>
                 <div class="input-group mb-3">
                     <label for="title-like-toggle" class="input-group-text">Motion picture</label>
-                    <input type="text" class="form-control" placeholder="Title" id="title-like-toggle" name="motion-picture" value="<?php if (isset($_POST['motion-picture'])) echo $_POST['motion-picture'] ?>">
+                    <input type="text" class="form-control" placeholder="Title" id="title-like-toggle"
+                           name="motion-picture"
+                           value="<?php if (isset($_POST['motion-picture'])) echo $_POST['motion-picture'] ?>">
 
-                    <button class="btn btn-outline-secondary" type="submit" name="toggle-like" formaction="?tab=likes">Like motion picture</button>
+                    <button class="btn btn-outline-secondary" type="submit" name="toggle-like" formaction="?tab=likes">
+                        Like motion picture
+                    </button>
                 </div>
             </form>
         </div>
@@ -218,8 +253,7 @@
                             <th class='col-md-2'>Budget</th>
                             <th class='col-md-2'>Genre(s)</th>
                         </tr>";
-    }
-    else if (isset($_POST['people-submitted'])) {
+    } else if (isset($_POST['people-submitted'])) {
         $qb = $qb->select('P.name', 'P.nationality', 'P.dob', 'P.gender')
             ->from('People P')
             ->groupBy('P.id')
@@ -253,8 +287,7 @@
                             <th class='col-md-2'>Motion Pictures</th>
                             <th class='col-md-2'>Awards</th>
                         </tr>";
-    }
-    else if (isset($_POST['likes-submitted'])) {
+    } else if (isset($_POST['likes-submitted'])) {
 //        <input type="text" class="form-control" placeholder="" id="email" name="email" oninput="setEmailFields(this.value)">
         $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
             ->from('MotionPicture M')
@@ -273,8 +306,7 @@
                             <th class='col-md-2'>Budget</th>
                             <th class='col-md-2'>Genre(s)</th>
                         </tr>";
-    }
-    else if (isset($_POST['toggle-like'])) {
+    } else if (isset($_POST['toggle-like'])) {
         if (empty($_POST['email']) || empty($_POST['motion-picture'])) {
             echo "Please enter an email and a motion picture to like or unlike";
             return;
@@ -340,8 +372,7 @@
                             <th class='col-md-2'>Budget</th>
                             <th class='col-md-2'>Genre(s)</th>
                         </tr>";
-    }
-    else {
+    } else {
         $query = $conn->prepare("SELECT * FROM MotionPicture;");
         $table_header = "<tr>
                             <th class='col-md-2'>ID</th>
@@ -404,33 +435,5 @@
     $conn = null;
     ?>
 </div>
-<script>
-    function setTab(value) {
-        history.pushState({}, "", window.location.pathname + "?tab=" + value)
-    }
-
-    console.log("hello");
-
-    // stop form from refreshing page and losing state
-    document.getElementsByName("form").forEach(function (form) {
-        console.log("hi")
-        form.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const formData = new FormData(form);
-            const searchParams = new URLSearchParams(formData).toString();
-            const action = form.getAttribute("formaction");
-            fetch(action, {
-                method: "POST",
-                body: searchParams,
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-            }).then(response => response.text()).then(text => {
-                document.querySelector("body").innerHTML = text;
-            });
-        });
-    });
-</script>
-
 </body>
 </html>
