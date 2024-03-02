@@ -55,38 +55,32 @@
             <form method="post" action="index.php">
                 <div class="input-group mb-3">
                     <label for="title" class="input-group-text">Title</label>
-                    <input type="text" class="form-control" id="title" placeholder="" name="title">
+                    <input type="text" class="form-control" id="title" name="title" value="<?php if (isset($_POST['title'])) echo $_POST['title'] ?>">
 
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">Type
-                    </button>
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Type</button>
                     <ul class="dropdown-menu">
                         <li class="dropdown-item form-check">
-                            <input class="form-check-input mx-1" type="checkbox" value="" id="flexCheckDefault"
-                                   name="search-movies">
+                            <input class="form-check-input mx-1" type="checkbox" id="flexCheckDefault" name="search-movies" <?php if (isset($_POST['search-movies'])) echo "checked" ?>>
                             <label class="form-check-label" for="flexCheckDefault">Movie</label>
                         </li>
                         <li class="dropdown-item form-check">
-                            <input class="form-check-input mx-1" type="checkbox" value="" id="flexCheckDefault"
-                                   name="search-tv-shows">
+                            <input class="form-check-input mx-1" type="checkbox" id="flexCheckDefault" name="search-tv-shows" <?php if (isset($_POST['search-tv-shows'])) echo "checked" ?>>
                             <label class="form-check-label" for="flexCheckDefault">TV Show</label>
                         </li>
                     </ul>
 
                     <label for="genre" class="input-group-text">Genre</label>
-                    <input type="text" class="form-control" id="genre" placeholder="" name="genre">
+                    <input type="text" class="form-control" id="genre" name="genre" value="<?php if (isset($_POST['genre'])) echo $_POST['genre'] ?>">
 
                     <label for="rating-start" class="input-group-text">Rated from</label>
-                    <input type="number" class="form-control" placeholder="1" name="rating-start" id="rating-start">
+                    <input type="number" class="form-control" placeholder="1" name="rating-start" id="rating-start" value="<?php if (isset($_POST['rating-start'])) echo $_POST['rating-start'] ?>">
                     <label for="rating-end" class="input-group-text">to</label>
-                    <input type="number" class="form-control" placeholder="10" name="rating-end" id="rating-end">
+                    <input type="number" class="form-control" placeholder="10" name="rating-end" id="rating-end" value="<?php if (isset($_POST['rating-end'])) echo $_POST['rating-end'] ?>">
 
                     <label for="production" class="input-group-text">Production</label>
-                    <input type="text" class="form-control" id="title" placeholder="" name="production">
+                    <input type="text" class="form-control" id="production" name="production" value="<?php if (isset($_POST['production'])) echo $_POST['production'] ?>">
 
-                    <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted"
-                            formaction="?tab=motion-picture">Search motion pictures
-                    </button>
+                    <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted" formaction="?tab=motion-picture">Search motion pictures</button>
                 </div>
             </form>
         </div>
@@ -96,20 +90,18 @@
             <form method="post" action="index.php">
                 <div class="input-group mb-3">
                     <label for="name" class="input-group-text">Name</label>
-                    <input type="text" class="form-control" id="name" placeholder="" name="name">
+                    <input type="text" class="form-control" id="name" name="name" value="<?php if (isset($_POST['name'])) echo $_POST['name'] ?>">
 
                     <label for="worked-in" class="input-group-text">Worked in</label>
-                    <input type="text" class="form-control" placeholder="" name="worked-in" id="worked-in">
+                    <input type="text" class="form-control" name="worked-in" id="worked-in" value="<?php if (isset($_POST['worked-in'])) echo $_POST['worked-in'] ?>">
 
                     <label for="role" class="input-group-text">Role</label>
-                    <input type="text" class="form-control" placeholder="" name="role" id="role">
+                    <input type="text" class="form-control" name="role" id="role" value="<?php if (isset($_POST['role'])) echo $_POST['role'] ?>">
 
                     <label for="award" class="input-group-text">Award</label>
-                    <input type="text" class="form-control" placeholder="" name="award" id="award">
+                    <input type="text" class="form-control" name="award" id="award" value="<?php if (isset($_POST['award'])) echo $_POST['award'] ?>">
 
-                    <button class="btn btn-outline-secondary" type="submit" name="people-submitted"
-                            formaction="?tab=people">Search people
-                    </button>
+                    <button class="btn btn-outline-secondary" type="submit" name="people-submitted" formaction="?tab=people">Search people</button>
                 </div>
             </form>
         </div>
@@ -118,23 +110,21 @@
              tabindex="1">
             <form method="post" action="index.php">
                 <div class="input-group mb-3">
-                    <span class="input-group-text">Email</span>
-                    <input type="text" class="form-control" placeholder="" id="email" name="email" oninput="setEmailFields(this.value)">
+                    <label for="email" class="input-group-text">Email</label>
+                    <input type="text" class="form-control" placeholder="" id="email" name="email">
 
                     <button class="btn btn-outline-secondary" type="submit" name="likes-submitted"
                             formaction="?tab=likes">Your likes
                     </button>
                 </div>
-            </form>
-            <form method="post" action="index.php"
-                  <div class="input-group mb-3">
-                      <span class="input-group-text">Motion picture</span>
-                      <input type="text" class="form-control" placeholder="Title" name="motion-picture">
+                <div class="input-group mb-3">
+                    <label for="title-like-toggle" class="input-group-text">Motion picture</label>
+                    <input type="text" class="form-control" placeholder="Title" id="title-like-toggle" name="motion-picture">
 
-                      <button class="btn btn-outline-secondary" type="submit" name="toggle-like"
-                              formaction="?tab=likes">Like motion picture
-                      </button>
-                  </div>
+                    <button class="btn btn-outline-secondary" type="submit" name="toggle-like"
+                            formaction="?tab=likes">Like motion picture
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -437,14 +427,6 @@
     ?>
 </div>
 <script>
-    setEmailFields(localStorage.getItem("email"));
-
-    function setEmailFields(value) {
-        if (document.getElementById("email").value !== value)
-            document.getElementById("email").value = value;
-        localStorage.setItem("email", value);
-    }
-
     function setTab(value) {
         history.pushState({}, "", window.location.pathname + "?tab=" + value)
     }
