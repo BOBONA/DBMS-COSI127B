@@ -329,7 +329,8 @@
                             <th class='col-md-2'>Budget</th>
                             <th class='col-md-2'>Genre</th>
                         </tr>";
-    } else if (isset($_POST['people-submitted'])) {
+    }
+    else if (isset($_POST['people-submitted'])) {
         $qb = $qb->select('P.name', 'P.nationality', 'P.dob', 'P.gender')
             ->from('People P')
             ->groupBy('P.id')
@@ -363,7 +364,9 @@
                             <th class='col-md-2'>Motion Pictures</th>
                             <th class='col-md-2'>Awards</th>
                         </tr>";
-    } else {
+    }
+    else if (isset($_POST['like-submitted'])){}
+    else {
         $query = $conn->prepare("SELECT * FROM MotionPicture;");
         $table_header = "<tr>
                             <th class='col-md-2'>ID</th>
@@ -430,6 +433,25 @@
     function setTab(value) {
         history.pushState({}, "", window.location.pathname + "?tab=" + value)
     }
+
+    // stop form from refreshing page and losing state
+    document.getElementsByName("form").forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const searchParams = new URLSearchParams(formData).toString();
+            const action = form.getAttribute("formaction");
+            fetch(action, {
+                method: "POST",
+                body: searchParams,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).then(response => response.text()).then(text => {
+                document.querySelector("body").innerHTML = text;
+            });
+        });
+    });
 </script>
 
 </body>
