@@ -27,14 +27,6 @@
 </div>
 
 <div class="container">
-    <div class="input-group mb-3">
-        <span class="input-group-text">Email</span>
-        <input type="text" class="form-control" placeholder="" id="email" name="email"
-               oninput="setEmailFields(this.value)">
-    </div>
-</div>
-
-<div class="container">
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "motion-picture") echo "active" ?>"
@@ -47,6 +39,12 @@
             <button class="nav-link <?php if (isset($_GET["tab"]) && $_GET["tab"] == "people") echo "active" ?>"
                     id="people-tab" data-bs-toggle="tab" data-bs-target="#people-search"
                     type="button" role="tab" aria-controls="people-search" onclick="setTab('people')">People
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link <?php if (isset($_GET["tab"]) && $_GET["tab"] == "likes") echo "active" ?>"
+                    id="likes-tab" data-bs-toggle="tab" data-bs-target="#likes-search"
+                    type="button" role="tab" aria-controls="likes-search" onclick="setTab('likes')">Likes
             </button>
         </li>
     </ul>
@@ -86,10 +84,8 @@
                     <label for="production" class="input-group-text">Production</label>
                     <input type="text" class="form-control" id="title" placeholder="" name="production">
 
-                    <input type="hidden" id="motion-picture-search-email" value="" name="email">
-
                     <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted"
-                            formaction="?tab=motion-picture">Search
+                            formaction="?tab=motion-picture">Search motion pictures
                     </button>
                 </div>
             </form>
@@ -111,19 +107,40 @@
                     <label for="award" class="input-group-text">Award</label>
                     <input type="text" class="form-control" placeholder="" name="award" id="award">
 
-                    <input type="hidden" id="people-search-email" value="" name="email">
-
                     <button class="btn btn-outline-secondary" type="submit" name="people-submitted"
-                            formaction="?tab=people">Search
+                            formaction="?tab=people">Search people
                     </button>
                 </div>
+            </form>
+        </div>
+        <div class="tab-pane fade <?php if (isset($_GET["tab"]) && $_GET["tab"] == "likes") echo "show active" ?>"
+             id="likes-search" role="tabpanel" aria-labelledby="likes-search-tab"
+             tabindex="1">
+            <form method="post" action="index.php">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Email</span>
+                    <input type="text" class="form-control" placeholder="" id="email" name="email" oninput="setEmailFields(this.value)">
+
+                    <button class="btn btn-outline-secondary" type="submit" name="likes-submitted"
+                            formaction="?tab=likes">Your likes
+                    </button>
+                </div>
+            </form>
+            <form method="post" action="index.php"
+                  <div class="input-group mb-3">
+                      <span class="input-group-text">Motion picture</span>
+                      <input type="text" class="form-control" placeholder="Title" name="motion-picture">
+
+                      <button class="btn btn-outline-secondary" type="submit" name="toggle-like"
+                              formaction="?tab=likes">Like motion picture
+                      </button>
+                  </div>
             </form>
         </div>
     </div>
 </div>
 
 <div class="container">
-    <h1>Guests</h1>
     <?php
     function dbg($var): void
     {
@@ -272,16 +289,16 @@
             }
 
             return $query;
-
         }
     }
 
     $qb = new QueryBuilder($conn);
     // Handle submit buttons
     if (isset($_POST['motion-picture-submitted'])) {
-        $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget', "G.genre_name")
+        $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
             ->from('MotionPicture M')
-            ->leftJoin('Genre G', 'M.id = G.mpid');
+            ->groupBy('M.id')
+            ->leftJoin('Genre G', 'M.id = G.mpid')->group('G.genre_name', 'genres');
 
         if (!empty($_POST['title'])) {
             $qb->where("M.name LIKE :title");
@@ -398,7 +415,6 @@
         }
     }
 
-
     try {
         dbg($query);
         $query->execute();
@@ -426,8 +442,6 @@
     function setEmailFields(value) {
         if (document.getElementById("email").value !== value)
             document.getElementById("email").value = value;
-        document.getElementById("motion-picture-search-email").value = value;
-        document.getElementById("people-search-email").value = value;
         localStorage.setItem("email", value);
     }
 
