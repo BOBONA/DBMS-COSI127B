@@ -1,76 +1,44 @@
 # IMBD Clone
 
-## Contribution
+## Supported Queries
 
-To add a query,
+### Motion Pictures
 
-1. Add a tab to the tab group
-    ```php
-    <ul class="nav nav-tabs" role="tablist">
-        <!-- other tabs ... -->
-        <li class="nav-item" role="presentation">
-            <button class="nav-link <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "<tab-name>") echo "active" ?>"
-                    id="<tab-name>-tab" data-bs-toggle="tab"
-                    data-bs-target="#<tab-name>-search" type="button" role="tab"
-                    aria-controls="<tab-name>-search" onclick="setTab('<tab-name>')">Tab Name
-            </button>
-        </li>
-    </ul>
-    ```
-1. Add a new tab content
-    ```php
-    <div class="tab-content">
-        <div class="tab-pane fade <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "<tab-name>") echo "show active" ?>"
-             id="<tab-name>-search" role="tabpanel"
-             aria-labelledby="<tab-name>-search-tab" tabindex="0">
-            <form method="post" action="index.php">
-                <!-- ... -->
-            </form>
-        </div>
-    </div>
-    ```
-1. Add items to the form
-    ```php
-   <form method="post" action="index.php">
-       <div class="input-group mb-3">
-           <label for="name" class="input-group-text">Name</label>
-           <input type="text" class="form-control" id="name" placeholder="" name="name">
-   
-           <!-- more fields -->
-   
-           <input type="hidden" id="motion-picture-search-email" value="" name="email">
-           <button class="btn btn-outline-secondary" type="submit" name="<tab-name>-submitted">Search
-        </div>
-    </form>
-    ```
-1. Add a block to the if statement
-    ```php
-   // ...
-    else if (isset($_POST["<tab-name>-submitted"])) {
-        // ...
-    }
-    ```
-   
-1. Add the query and `$table_header` to the block
-   ```php
-        $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget', "G.genre_name")
-            ->from('MotionPicture M')
-            ->leftJoin('Genre G', 'M.id = G.mpid');
+- Search by _name_
+  - Output movie name, rating, production, budget
+- Search by shooting location
+  - Output name
+- Search the top 2 rated thriller movies shot in Boston
+  - Output name, rating
+- Search the movies with more than _X_ likes by users younger than _Y_
+  - Output name, number of likes by users younger than _Y_
+- Search for motion pictures with a higher rating than the average rating of comedy motion pictures
+  - Output name, descending rating
+- Search for the top 5 movies with the highest number of involved people
+  - Output movie name, people count, role count
 
-        if (!empty($_POST['title'])) {
-            $qb->where("M.name LIKE :title");
-            $qb->params[':title'] = "%" . $_POST['title'] . "%";
-        }
-        if (!empty(/* more attrs */)) {
-            // ...
-        }
-         
-        $table_header = "<tr>
-                            <th class='col-md-2'>Name</th>
-                            <th class='col-md-2'>Rating</th>
-                            <th class='col-md-2'>Production</th>
-                            <th class='col-md-2'>Budget</th>
-                            <th class='col-md-2'>Genre</th>
-                        </tr>";
-   ```
+### People
 
+- Search directors who directed TV series in a _zipcode_
+  - Output name, TV series name
+- Search people who have received more than _k_ awards for a single motion picture in a single year
+  - Output name, motion picture name, award year, award count
+- List the youngest and oldest actors (by award-winning year) to win an award
+  - Output name, age (at time of award)
+- List the American Producers who had a box office collection >= _X_ with a budget <= _Y_
+  - Output name, movie name, box office collection, budget
+- List people who have played multiple roles in a motion picture where the rating is more than _X_
+  - Output name, motion picture name, number of roles
+- List the actors who have played a role in both "Marvel" and "Warner Bros" productions
+  - Output actor names, motion picture names
+- List all actor pairs with the same birthday
+
+### Likes
+
+- Search liked by _email_
+   - Output movie name, rating, production, budget
+- Functionality to like a movie
+
+### Meta
+
+- Output all tables

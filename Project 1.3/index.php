@@ -195,7 +195,7 @@
     $servername = "127.0.0.1";
     $username = "root";
     $password = "";
-    $dbname = "COSI127b";
+    $dbname = "project 1.3";
 
     // Create ORM connection
     try {
