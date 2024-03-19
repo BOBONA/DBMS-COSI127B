@@ -60,59 +60,36 @@ require_once "components.php";
 
 <div class="container">
     <?php echo Tabs([
-            Tab("motion-picture", "Motion Pictures"),
-            Tab("people", "People"),
-            Tab("likes", "Likes")
-        ]
-    ) ?>
+        Tab("motion-picture", "Motion Pictures"),
+        Tab("people", "People"),
+        Tab("likes", "Likes")
+    ])?>
     <div class="tab-content">
-        <div class="tab-pane fade <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "motion-picture") echo "show active" ?>"
-             id="motion-picture-search" role="tabpanel"
-             aria-labelledby="motion-picture-search-tab" tabindex="0">
-            <?php echo Form("motion-picture", [
+        <?php echo TabContent("motion-picture", [
+            Form("motion-picture", "motion-picture", [
                 TextInput("title", "Title"),
                 DropDown("type", "Type", ["Movie", "TV Show"]),
                 TextInput("genre", "Genre"),
                 TextInput("rating-start", "Rated from"),
                 TextInput("rating-end", "to"),
-                TextInput("production", "Production")])
-            ?>
-        </div>
-        <div class="tab-pane fade <?php if (isset($_GET["tab"]) && $_GET["tab"] == "people") echo "show active" ?>"
-             id="people-search" role="tabpanel" aria-labelledby="people-search-tab"
-             tabindex="1">
-            <?php echo Form("people", [
+                TextInput("production", "Production")]),
+        ])?>
+        <?php echo TabContent("people", [
+            Form("people", "people", [
                 TextInput("name", "Name"),
                 TextInput("worked-in", "Worked in"),
                 TextInput("role", "Role"),
-                TextInput("award", "Award")
-            ]) ?>
-        </div>
-        <div class="tab-pane fade <?php if (isset($_GET["tab"]) && $_GET["tab"] == "likes") echo "show active" ?>"
-             id="likes-search" role="tabpanel" aria-labelledby="likes-search-tab"
-             tabindex="1">
-            <form method="post" action="index.php">
-                <div class="input-group mb-3">
-                    <label for="email" class="input-group-text">Email</label>
-                    <input type="text" class="form-control" id="email" name="email"
-                           value="<?php if (isset($_POST['email'])) echo $_POST['email'] ?>">
-
-                    <button class="btn btn-outline-secondary" type="submit" name="likes-submitted"
-                            formaction="?tab=likes">Your likes
-                    </button>
-                </div>
-                <div class="input-group mb-3">
-                    <label for="title-like-toggle" class="input-group-text">Motion picture</label>
-                    <input type="text" class="form-control" placeholder="Title" id="title-like-toggle"
-                           name="motion-picture"
-                           value="<?php if (isset($_POST['motion-picture'])) echo $_POST['motion-picture'] ?>">
-
-                    <button class="btn btn-outline-secondary" type="submit" name="toggle-like" formaction="?tab=likes">
-                        Like motion picture
-                    </button>
-                </div>
-            </form>
-        </div>
+                TextInput("award", "Award")])
+        ])?>
+        <?php echo TabContent("likes", [
+            Form("likes", "likes", [
+                TextInput("email", "Email")],
+            "Your likes"),
+            Form("toggle-like", "likes", [
+                TextInput("email", "Email"),
+                TextInput("motion-picture", "Motion Picture")],
+            "Like motion picture")
+        ])?>
     </div>
 </div>
 
@@ -184,13 +161,7 @@ require_once "components.php";
         }
 
         $query = $qb->build();
-        $table_header = "<tr>
-                            <th class='col-md-2'>Name</th>
-                            <th class='col-md-2'>Rating</th>
-                            <th class='col-md-2'>Production</th>
-                            <th class='col-md-2'>Budget</th>
-                            <th class='col-md-2'>Genre(s)</th>
-                        </tr>";
+        $table_header = TableHeader(["Name", "Rating", "Production", "Budget", "Genre(s)"]);
     } else if (isset($_POST['people-submitted'])) {
         $qb = $qb->select('P.name', 'P.nationality', 'P.dob', 'P.gender')
             ->from('People P')
@@ -216,17 +187,8 @@ require_once "components.php";
         }
 
         $query = $qb->build();
-        $table_header = "<tr>
-                            <th class='col-md-2'>Name</th>
-                            <th class='col-md-2'>Nationality</th>
-                            <th class='col-md-2'>DOB</th>
-                            <th class='col-md-2'>Gender</th>
-                            <th class='col-md-2'>Roles</th>
-                            <th class='col-md-2'>Motion Pictures</th>
-                            <th class='col-md-2'>Awards</th>
-                        </tr>";
+        $table_header = TableHeader(["Name", "Nationality", "DOB", "Gender", "Roles", "Motion Pictures", "Awards"]);
     } else if (isset($_POST['likes-submitted'])) {
-//        <input type="text" class="form-control" placeholder="" id="email" name="email" oninput="setEmailFields(this.value)">
         $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
             ->from('MotionPicture M')
             ->groupBy('M.id')
@@ -237,14 +199,8 @@ require_once "components.php";
         $qb->params[':email'] = $_POST['email'];
 
         $query = $qb->build();
-        $table_header = "<tr>
-                            <th class='col-md-2'>Name</th>
-                            <th class='col-md-2'>Rating</th>
-                            <th class='col-md-2'>Production</th>
-                            <th class='col-md-2'>Budget</th>
-                            <th class='col-md-2'>Genre(s)</th>
-                        </tr>";
-    } else if (isset($_POST['toggle-like'])) {
+        $table_header = TableHeader(["Name", "Rating", "Production", "Budget", "Genre(s)"]);
+    } else if (isset($_POST['toggle-like-submitted'])) {
         if (empty($_POST['email']) || empty($_POST['motion-picture'])) {
             echo "Please enter an email and a motion picture to like or unlike";
             return;
@@ -304,22 +260,10 @@ require_once "components.php";
         $qb->params[':email'] = $_POST['email'];
 
         $query = $qb->build();
-        $table_header = "<tr>
-                            <th class='col-md-2'>Name</th>
-                            <th class='col-md-2'>Rating</th>
-                            <th class='col-md-2'>Production</th>
-                            <th class='col-md-2'>Budget</th>
-                            <th class='col-md-2'>Genre(s)</th>
-                        </tr>";
+        $table_header = TableHeader(["Name", "Rating", "Production", "Budget", "Genre(s)"]);
     } else {
         $query = $conn->prepare("SELECT * FROM MotionPicture;");
-        $table_header = "<tr>
-                            <th class='col-md-2'>ID</th>
-                            <th class='col-md-2'>Name</th>
-                            <th class='col-md-2'>Rating</th>
-                            <th class='col-md-2'>Production</th>
-                            <th class='col-md-2'>Budget</th>
-                         </tr>";
+        $table_header = TableHeader(["ID", "Name", "Rating", "Production", "Budget"]);
     }
 
     // We will now create a table from PHP side
