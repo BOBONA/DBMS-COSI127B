@@ -21,6 +21,10 @@
 </head>
 
 <body>
+<?php
+require_once "query_builder.php";
+require_once "components.php";
+?>
 <script>
     function setTab(value) {
         history.pushState({}, "", window.location.pathname + "?tab=" + value)
@@ -55,100 +59,34 @@
 </div>
 
 <div class="container">
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "motion-picture") echo "active" ?>"
-                    id="motion-picture-tab" data-bs-toggle="tab"
-                    data-bs-target="#motion-picture-search" type="button" role="tab"
-                    aria-controls="motion-picture-search" onclick="setTab('motion-picture')">Motion Pictures
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link <?php if (isset($_GET["tab"]) && $_GET["tab"] == "people") echo "active" ?>"
-                    id="people-tab" data-bs-toggle="tab" data-bs-target="#people-search"
-                    type="button" role="tab" aria-controls="people-search" onclick="setTab('people')">People
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link <?php if (isset($_GET["tab"]) && $_GET["tab"] == "likes") echo "active" ?>"
-                    id="likes-tab" data-bs-toggle="tab" data-bs-target="#likes-search"
-                    type="button" role="tab" aria-controls="likes-search" onclick="setTab('likes')">Likes
-            </button>
-        </li>
-    </ul>
+    <?php echo Tabs([
+            Tab("motion-picture", "Motion Pictures"),
+            Tab("people", "People"),
+            Tab("likes", "Likes")
+        ]
+    ) ?>
     <div class="tab-content">
         <div class="tab-pane fade <?php if (!isset($_GET["tab"]) || $_GET["tab"] == "motion-picture") echo "show active" ?>"
              id="motion-picture-search" role="tabpanel"
              aria-labelledby="motion-picture-search-tab" tabindex="0">
-            <form method="post" action="index.php">
-                <div class="input-group mb-3">
-                    <label for="title" class="input-group-text">Title</label>
-                    <input type="text" class="form-control" id="title" name="title"
-                           value="<?php if (isset($_POST['title'])) echo $_POST['title'] ?>">
-
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">Type
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-item form-check">
-                            <input class="form-check-input mx-1" type="checkbox" id="flexCheckDefault"
-                                   name="search-movies" <?php if (isset($_POST['search-movies'])) echo "checked" ?>>
-                            <label class="form-check-label" for="flexCheckDefault">Movie</label>
-                        </li>
-                        <li class="dropdown-item form-check">
-                            <input class="form-check-input mx-1" type="checkbox" id="flexCheckDefault"
-                                   name="search-tv-shows" <?php if (isset($_POST['search-tv-shows'])) echo "checked" ?>>
-                            <label class="form-check-label" for="flexCheckDefault">TV Show</label>
-                        </li>
-                    </ul>
-
-                    <label for="genre" class="input-group-text">Genre</label>
-                    <input type="text" class="form-control" id="genre" name="genre"
-                           value="<?php if (isset($_POST['genre'])) echo $_POST['genre'] ?>">
-
-                    <label for="rating-start" class="input-group-text">Rated from</label>
-                    <input type="number" class="form-control" placeholder="1" name="rating-start" id="rating-start"
-                           value="<?php if (isset($_POST['rating-start'])) echo $_POST['rating-start'] ?>">
-                    <label for="rating-end" class="input-group-text">to</label>
-                    <input type="number" class="form-control" placeholder="10" name="rating-end" id="rating-end"
-                           value="<?php if (isset($_POST['rating-end'])) echo $_POST['rating-end'] ?>">
-
-                    <label for="production" class="input-group-text">Production</label>
-                    <input type="text" class="form-control" id="production" name="production"
-                           value="<?php if (isset($_POST['production'])) echo $_POST['production'] ?>">
-
-                    <button class="btn btn-outline-secondary" type="submit" name="motion-picture-submitted"
-                            formaction="?tab=motion-picture">Search motion pictures
-                    </button>
-                </div>
-            </form>
+            <?php echo Form("motion-picture", [
+                TextInput("title", "Title"),
+                DropDown("type", "Type", ["Movie", "TV Show"]),
+                TextInput("genre", "Genre"),
+                TextInput("rating-start", "Rated from"),
+                TextInput("rating-end", "to"),
+                TextInput("production", "Production")])
+            ?>
         </div>
         <div class="tab-pane fade <?php if (isset($_GET["tab"]) && $_GET["tab"] == "people") echo "show active" ?>"
              id="people-search" role="tabpanel" aria-labelledby="people-search-tab"
              tabindex="1">
-            <form method="post" action="index.php">
-                <div class="input-group mb-3">
-                    <label for="name" class="input-group-text">Name</label>
-                    <input type="text" class="form-control" id="name" name="name"
-                           value="<?php if (isset($_POST['name'])) echo $_POST['name'] ?>">
-
-                    <label for="worked-in" class="input-group-text">Worked in</label>
-                    <input type="text" class="form-control" name="worked-in" id="worked-in"
-                           value="<?php if (isset($_POST['worked-in'])) echo $_POST['worked-in'] ?>">
-
-                    <label for="role" class="input-group-text">Role</label>
-                    <input type="text" class="form-control" name="role" id="role"
-                           value="<?php if (isset($_POST['role'])) echo $_POST['role'] ?>">
-
-                    <label for="award" class="input-group-text">Award</label>
-                    <input type="text" class="form-control" name="award" id="award"
-                           value="<?php if (isset($_POST['award'])) echo $_POST['award'] ?>">
-
-                    <button class="btn btn-outline-secondary" type="submit" name="people-submitted"
-                            formaction="?tab=people">Search people
-                    </button>
-                </div>
-            </form>
+            <?php echo Form("people", [
+                TextInput("name", "Name"),
+                TextInput("worked-in", "Worked in"),
+                TextInput("role", "Role"),
+                TextInput("award", "Award")
+            ]) ?>
         </div>
         <div class="tab-pane fade <?php if (isset($_GET["tab"]) && $_GET["tab"] == "likes") echo "show active" ?>"
              id="likes-search" role="tabpanel" aria-labelledby="likes-search-tab"
@@ -180,13 +118,12 @@
 
 <div class="container">
     <?php
-    require_once "query_builder.php";
 
     function dbg($var): void
     {
-//        echo "<pre>";
-//        var_dump($var);
-//        echo "</pre>";
+        echo "<pre>";
+        var_dump($var);
+        echo "</pre>";
     }
 
     dbg($_POST);
@@ -195,7 +132,7 @@
     $servername = "127.0.0.1";
     $username = "root";
     $password = "";
-    $dbname = "COSI127b";
+    $dbname = "Project1.3";
 
     // Create ORM connection
     try {
