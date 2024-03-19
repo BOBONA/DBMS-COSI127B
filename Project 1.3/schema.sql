@@ -20,12 +20,12 @@ CREATE TABLE IF NOT EXISTS `User`
 
 CREATE TABLE IF NOT EXISTS `Likes`
 (
-    uemail VARCHAR(255) NOT NULL,
     mpid   INTEGER      NOT NULL,
+    uemail VARCHAR(255) NOT NULL,
 
-    PRIMARY KEY (uemail, mpid),
-    FOREIGN KEY (uemail) REFERENCES User (email),
-    FOREIGN KEY (mpid) REFERENCES MotionPicture (id)
+    PRIMARY KEY (mpid, uemail),
+    FOREIGN KEY (mpid) REFERENCES MotionPicture (id),
+    FOREIGN KEY (uemail) REFERENCES User (email)
 );
 
 CREATE TABLE IF NOT EXISTS `Movie`

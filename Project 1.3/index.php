@@ -118,6 +118,7 @@ require_once "components.php";
 
 <div class="container">
     <?php
+    require_once "query_builder.php";
 
     function dbg($var): void
     {
@@ -132,7 +133,7 @@ require_once "components.php";
     $servername = "127.0.0.1";
     $username = "root";
     $password = "";
-    $dbname = "Project1.3";
+    $dbname = "project 1.3";
 
     // Create ORM connection
     try {
