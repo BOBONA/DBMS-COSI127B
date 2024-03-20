@@ -17,11 +17,12 @@ function Tabs(array $tabs): string
 /**
  * @param string $name tab name, for metadata and the target
  * @param string $label
+ * @param bool $default whether this tab is the default
  * @return string
  */
-function Tab(string $name, string $label): string
+function Tab(string $name, string $label, bool $default = false): string
 {
-    $active = (!isset($_GET["tab"]) || $_GET["tab"] == $name) ? 'active' : '';
+    $active = ((!isset($_GET["tab"]) && $default) || (isset($_GET["tab"]) && $_GET["tab"] == $name)) ? 'active' : '';
     return <<<HTML
         <li class="nav-item" role="presentation">
             <button class="nav-link $active" id="$name-tab" data-bs-toggle="tab"
@@ -32,10 +33,16 @@ function Tab(string $name, string $label): string
     HTML;
 }
 
-function TabContent(string $name, array $children): string
+/**
+ * @param string $name tab name for metadata
+ * @param array $children an array of HTML strings
+ * @param bool $default whether this tab is the default
+ * @return string
+ */
+function TabContent(string $name, array $children, bool $default = false): string
 {
     $childrenHtml = implode('', $children);
-    $active = (!isset($_GET["tab"]) || $_GET["tab"] == $name) ? 'show active' : '';
+    $active = ((!isset($_GET["tab"]) && $default) || (isset($_GET["tab"]) && $_GET["tab"] == $name)) ? 'show active' : '';
     return <<<HTML
         <div class="tab-pane fade $active"
              id="$name-search" role="tabpanel"

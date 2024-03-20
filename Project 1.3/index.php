@@ -60,7 +60,7 @@ require_once "components.php";
 
 <div class="container">
     <?php echo Tabs([
-        Tab("motion-picture", "Motion Pictures"),
+        Tab("motion-picture", "Motion Pictures", true),
         Tab("people", "People"),
         Tab("likes", "Likes"),
         "<div style='flex: 1;'></div>",
@@ -78,7 +78,7 @@ require_once "components.php";
                 TextInput("rating-end", "to"),
                 TextInput("production", "Production")],
             "Search motion pictures"),
-        ])?>
+        ], true)?>
         <?php echo TabContent("people", [
             Form("people", "people", [
                 TextInput("name", "Name"),
@@ -146,9 +146,9 @@ require_once "components.php";
 
     function dbg($var): void
     {
-        echo "<pre>";
-        var_dump($var);
-        echo "</pre>";
+//        echo "<pre>";
+//        var_dump($var);
+//        echo "</pre>";
     }
 
     dbg($_POST);
