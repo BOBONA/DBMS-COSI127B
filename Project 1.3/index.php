@@ -97,17 +97,17 @@ require_once "components.php";
         ])?>
         <?php echo TabContent("motion-picture-misc", [
             Form("search-by-name", "motion-picture-misc", [
-                TextInput("name", "Name")],
+                TextInput("name", "Motion picture name")],
                 "Search by name"),
             Form("search-by-shooting-location", "motion-picture-misc", [
                 TextInput("shooting-location", "Shooting Location")],
-                "Search by shooting location"),
+                "Search by country"),
             Form("search-movies-with-more-than-x-likes", "motion-picture-misc", [
-                TextInput("likes", "Minimum likes"),
-                TextInput("age", "from users younger than")],
+                TextInput("likes", "More than"),
+                TextInput("age", "likes from users younger than")],
                 "Search movies"),
             Form("search-top-2-thriller-movies", "motion-picture-misc", [],
-                "Top thriller movies shot in Boston", true),
+                "Top thriller movies shot only in Boston", true),
             Form("search-higher-rating-than-average-comedy", "motion-picture-misc", [],
                 "Movies better than the average comedy", true),
             Form("search-most-involved-movies", "motion-picture-misc", [],
@@ -147,13 +147,13 @@ require_once "components.php";
     function dbg($var): void
     {
         echo "<pre>";
-        # var_dump($var);
+        var_dump($var);
         echo "</pre>";
     }
 
     dbg($_POST);
 
-    // SQL CONNECTIONS
+    // SQL Connections
     $servername = "127.0.0.1";
     $username = "root";
     $password = "";
@@ -168,13 +168,13 @@ require_once "components.php";
     }
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Handle forms
     $qb = new QueryBuilder($conn);
-    // Handle submit buttons
     if (isset($_POST['motion-picture-submitted'])) {
         $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
             ->from('MotionPicture M')
             ->groupBy('M.id')
-            ->leftJoin('Genre G', 'M.id = G.mpid')->group('G.genre_name', 'genres');
+            ->leftJoin('Genre G', 'M.id = G.mpid')->groupCol('G.genre_name', 'genres');
 
         if (!empty($_POST['title'])) {
             $qb->where("M.name LIKE :title");
@@ -213,9 +213,9 @@ require_once "components.php";
         $qb = $qb->select('P.name', 'P.nationality', 'P.dob', 'P.gender')
             ->from('People P')
             ->groupBy('P.id')
-            ->leftJoin('Role R', 'P.id = R.pid')->group('R.role_name', 'roles')
-            ->leftJoin('MotionPicture M', 'R.mpid = M.id')->group('M.name', 'motion_pictures')
-            ->leftJoin('Award A', 'P.id = A.pid')->group('A.award_name', 'awards');
+            ->leftJoin('Role R', 'P.id = R.pid')->groupCol('R.role_name', 'roles')
+            ->leftJoin('MotionPicture M', 'R.mpid = M.id')->groupCol('M.name', 'motion_pictures')
+            ->leftJoin('Award A', 'P.id = A.pid')->groupCol('A.award_name', 'awards');
         if (!empty($_POST['name'])) {
             $qb->where("P.name LIKE :name");
             $qb->params[':name'] = "%" . $_POST['name'] . "%";
@@ -239,8 +239,7 @@ require_once "components.php";
         $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
             ->from('MotionPicture M')
             ->groupBy('M.id')
-            ->group('G.genre_name', 'genres')
-            ->leftJoin('Genre G', 'M.id = G.mpid')
+            ->leftJoin('Genre G', 'M.id = G.mpid')->groupCol('G.genre_name', 'genres')
             ->leftJoin('Likes L', 'M.id = L.mpid')
             ->where("L.uemail = :email");
         $qb->params[':email'] = $_POST['email'];
@@ -300,14 +299,111 @@ require_once "components.php";
         $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
             ->from('MotionPicture M')
             ->groupBy('M.id')
-            ->group('G.genre_name', 'genres')
-            ->leftJoin('Genre G', 'M.id = G.mpid')
+            ->leftJoin('Genre G', 'M.id = G.mpid')->groupCol('G.genre_name', 'genres')
             ->leftJoin('Likes L', 'M.id = L.mpid')
             ->where("L.uemail = :email");
         $qb->params[':email'] = $_POST['email'];
 
         $query = $qb->build();
         $table_header = TableHeader(["Name", "Rating", "Production", "Budget", "Genre(s)"]);
+    } else if (isset($_POST['search-by-name-submitted'])) {
+        $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
+            ->from('MotionPicture M')
+            ->groupBy('M.id')
+            ->leftJoin('Genre G', 'M.id = G.mpid')->groupCol('G.genre_name', 'genres')
+            ->where("M.name LIKE :name");
+        $qb->params[':name'] = "%" . $_POST['name'] . "%";
+
+        $query = $qb->build();
+        $table_header = TableHeader(["Name", "Rating", "Production", "Budget", "Genre(s)"]);
+    } else if (isset($_POST['search-by-shooting-location-submitted'])) {
+        $qb = $qb->select('M.name')
+            ->from('MotionPicture M')
+            ->groupBy('M.id')
+            ->leftJoin('Location S', 'M.id = S.mpid')
+            ->where("S.country LIKE :location");
+        $qb->params[':location'] = "%" . $_POST['shooting-location'] . "%";
+
+        $query = $qb->build();
+        $table_header = TableHeader(["Name"]);
+    } else if (isset($_POST['search-movies-with-more-than-x-likes-submitted'])) {
+        $qb = $qb->select('M.name', 'COUNT(L.uemail) as likes')
+            ->from('MotionPicture M')
+            ->groupBy('M.id')
+            ->leftJoin('Likes L', 'M.id = L.mpid')
+            ->leftJoin('User U', 'L.uemail = U.email')
+            ->where("U.age < :age")
+            ->having("likes > :likes");
+        $qb->params[':age'] = $_POST['age'];
+        $qb->params[':likes'] = $_POST['likes'];
+
+        $query = $qb->build();
+        $table_header = TableHeader(["Name", "Likes"]);
+    } else if (isset($_POST['search-top-2-thriller-movies-submitted'])) {
+        $qb = $qb->select('M.name', 'M.rating')
+            ->from('MotionPicture M')
+            ->leftJoin('Location L', 'M.id = L.mpid')
+            ->leftJoin('Genre G', 'M.id = G.mpid')
+            ->where("G.genre_name = 'Thriller'")
+            ->where("L.city = 'Boston'")
+            ->where("NOT EXISTS (SELECT * FROM Location L2 WHERE L2.mpid = M.id
+            AND L2.city != 'Boston')")
+            ->groupBy('M.id')
+            ->orderBy("M.rating", "DESC")
+            ->limit(2);
+
+        $query = $qb->build();
+        $table_header = TableHeader(["Name", "Rating"]);
+    } else if (isset($_POST['search-higher-rating-than-average-comedy-submitted'])) {
+       $qb = $qb->select('M.name', 'M.rating')
+            ->from('MotionPicture M')
+            ->groupBy('M.id')
+            ->leftJoin('Genre G', 'M.id = G.mpid')
+            ->where("G.genre_name = 'Comedy'")
+            ->having("M.rating > (SELECT AVG(M2.rating) FROM MotionPicture M2 LEFT JOIN Genre G2 ON M2.id = G2.mpid WHERE G2.genre_name = 'Comedy')")
+            ->orderBy("M.rating","DESC");
+
+        $query = $qb->build();
+        $table_header = TableHeader(["Name", "Rating"]);
+    } else if (isset($_POST['search-most-involved-movies-submitted'])) {
+        // TODO: I asked on the forum, should role_count be COUNT(DISTINCT)?
+        $qb = $qb->select('M.name', 'COUNT(DISTINCT P.id) as people_count', 'COUNT(R.role_name) as role_count')
+            ->from('MotionPicture M')
+            ->groupBy('M.id')
+            ->leftJoin('Role R', 'M.id = R.mpid')
+            ->leftJoin('People P', 'R.pid = P.id')
+            ->orderBy("people_count","DESC")
+            ->limit(5);
+
+        $query = $qb->build();
+        $table_header = TableHeader(["Name", "People Count", "Role Count"]);
+    } else if (isset($_POST['search-directors-in-zipcode-submitted'])) {
+        // List all directors who have directed TV series shot in a specific zip code (parameterized).
+        // List the director name and TV series name only without duplicates.
+
+        // TODO: Be careful using Copilot blindly, make sure to test queries. Feel free to rename the input labels to make it more clear what the queries do. Also the forum has some questions.
+    } else if (isset($_POST['search-award-winners-submitted'])) {
+        // Find the people who have received more than “k” (parameterized) awards for a single motion
+        // picture in the same year. List the person name, motion picture name, award year and award
+        // count.
+    } else if (isset($_POST['search-producers-submitted'])) {
+        // Find the American Producers who had a box office collection of more than or equal to “X”
+        // (parameterized) with a budget less than or equal to “Y” (parameterized). List the producer
+        // name, movie name, box office collection and budget
+    } else if (isset($_POST['search-actors-with-multiple-roles-submitted'])) {
+        // List the people who have played multiple roles in a motion picture where the rating is more
+        // than “X” (parameterized). List the person’s name, motion picture name and count of number
+        // of roles for that particular motion picture.
+    } else if (isset($_POST['search-youngest-oldest-actors-submitted'])) {
+        // Find the youngest and oldest actors to win at least one award. List the actor names and their
+        // age (at the time they received the award). The age should be computed from the person’s
+        // date of birth to the award-winning year only. In case of a tie, list all of them.
+    } else if (isset($_POST['search-actors-in-marvel-and-warner-bros-submitted'])) {
+        // Find the actors who have played a role in both “Marvel” and “Warner Bros” productions.
+        // List the actor names and the corresponding motion picture names.
+    } else if (isset($_POST['search-actors-with-same-birthday-submitted'])) {
+        // Find actors who share the same birthday. List the actor names (actor 1, actor 2) and their
+        // common birthday.
     } else if (isset($_POST['show-tables-submitted'])) {
         $query = $conn->prepare("SHOW TABLES;");
         $table_header = TableHeader(["Tables"]);
@@ -316,7 +412,7 @@ require_once "components.php";
         $table_header = TableHeader(["ID", "Name", "Rating", "Production", "Budget"]);
     }
 
-    // We will now create a table from PHP side
+    // Create a table with the results of the query
     echo "<table class='table table-md table-bordered'>";
     echo "<thead class='thead-dark' style='text-align: center'>";
     echo $table_header;
@@ -350,10 +446,9 @@ require_once "components.php";
     try {
         dbg($query);
         $query->execute();
-        // when fetching, we want to fetch as an associative array that only contains column names, not column names and indexes
-        $query->setFetchMode(PDO::FETCH_ASSOC);
+        $query->setFetchMode(PDO::FETCH_ASSOC); // fetch as an associative array
 
-        // For each row that we fetched, use the iterator to build a table row on front-end
+        // Build a table row for each row in the result
         foreach (new TableRows(new RecursiveArrayIterator($query->fetchAll())) as $k => $v) {
             echo $v;
         }
@@ -364,7 +459,7 @@ require_once "components.php";
     echo "</tbody>";
     echo "</table>";
 
-    // Destroy our connection
+    // Destroy the connection
     $conn = null;
     ?>
 </div>

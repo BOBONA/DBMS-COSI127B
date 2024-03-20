@@ -8,6 +8,9 @@ class QueryBuilder
     private array $where = [];
     private string $groupBy = '';
     private array $groups = [];
+    private array $having = [];
+    private int $limit = 0;
+    private string $orderBy = '';
     public array $params = [];
     private PDO $conn;
 
@@ -24,6 +27,9 @@ class QueryBuilder
         $this->where = [];
         $this->groupBy = '';
         $this->groups = [];
+        $this->having = [];
+        $this->limit = 0;
+        $this->orderBy = '';
         $this->params = [];
     }
 
@@ -75,9 +81,27 @@ class QueryBuilder
         return $this;
     }
 
-    public function group(string $column, string $alias): self
+    public function groupCol(string $column, string $alias): self
     {
         $this->groups[$column] = $alias;
+        return $this;
+    }
+
+    public function having(string $condition): self
+    {
+        $this->having[] = $condition;
+        return $this;
+    }
+
+    public function limit(int $limit): self
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    public function orderBy(string $column, string $direction = 'ASC'): self
+    {
+        $this->orderBy = " ORDER BY $column $direction";
         return $this;
     }
 
@@ -101,6 +125,21 @@ class QueryBuilder
         // handle the group by specifier
         if (!empty($this->groupBy)) {
             $sql .= ' GROUP BY ' . $this->groupBy;
+        }
+
+        // append all `HAVING`s joined by `AND`
+        if (count($this->having) > 0) {
+            $sql .= ' HAVING ' . implode(' AND ', $this->having);
+        }
+
+        // append the order by specifier
+        if (!empty($this->orderBy)) {
+            $sql .= $this->orderBy;
+        }
+
+        // append the limit specifier
+        if ($this->limit > 0) {
+            $sql .= ' LIMIT ' . $this->limit;
         }
 
         $sql .= ';';
