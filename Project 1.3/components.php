@@ -6,12 +6,9 @@
  */
 function Tabs(array $tabs): string
 {
-    $tabsHtml = '';
-    foreach ($tabs as $name => $label) {
-        $tabsHtml .= Tab($name, $label);
-    }
+    $tabsHtml = implode('', $tabs);
     return <<<HTML
-        <ul class="nav nav-tabs" role="tablist">
+        <ul class="nav nav-tabs flex-row" role="tablist">
             $tabsHtml
         </ul>
     HTML;
@@ -50,15 +47,19 @@ function TabContent(string $name, array $children): string
 
 /**
  * @param string $name form name, for metadata and the submit button
+ * @param string $tab the tab to submit to
  * @param array $children an array of HTML strings
+ * @param string|null $buttonText
+ * @param bool $inline whether to display the form inline
  * @return string
  */
-function Form(string $name, string $tab, array $children, string $buttonText = null): string
+function Form(string $name, string $tab, array $children, string $buttonText = null, bool $inline = false): string
 {
     $childrenHtml = implode('', $children);
     $buttonText = $buttonText ?? "Search $name";
+    $inline = $inline ? 'd-inline-block' : '';
     return <<<HTML
-        <form method="post" action="index.php">
+        <form method="post" action="index.php" class="$inline">
             <div class="input-group mb-3">
                 $childrenHtml
                 <button class="btn btn-outline-secondary" type="submit" name="$name-submitted" formaction="?tab=$tab">$buttonText</button>

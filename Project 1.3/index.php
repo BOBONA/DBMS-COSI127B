@@ -54,7 +54,7 @@ require_once "components.php";
 </script>
 
 <div class="container">
-    <h1 style="text-align:center">COSI 127b</h1>
+    <h1 style="text-align:center">COSI 127B</h1>
     <h3 style="text-align:center">IMDB "Clone"</h3>
 </div>
 
@@ -62,7 +62,11 @@ require_once "components.php";
     <?php echo Tabs([
         Tab("motion-picture", "Motion Pictures"),
         Tab("people", "People"),
-        Tab("likes", "Likes")
+        Tab("likes", "Likes"),
+        "<div style='flex: 1;'></div>",
+        Tab("motion-picture-misc", "Motion Picture Misc"),
+        Tab("people-misc", "People Misc"),
+        Tab("meta", "Meta")
     ])?>
     <div class="tab-content">
         <?php echo TabContent("motion-picture", [
@@ -72,7 +76,8 @@ require_once "components.php";
                 TextInput("genre", "Genre"),
                 TextInput("rating-start", "Rated from"),
                 TextInput("rating-end", "to"),
-                TextInput("production", "Production")]),
+                TextInput("production", "Production")],
+            "Search motion pictures"),
         ])?>
         <?php echo TabContent("people", [
             Form("people", "people", [
@@ -90,6 +95,48 @@ require_once "components.php";
                 TextInput("motion-picture", "Motion Picture")],
             "Like motion picture")
         ])?>
+        <?php echo TabContent("motion-picture-misc", [
+            Form("search-by-name", "motion-picture-misc", [
+                TextInput("name", "Name")],
+                "Search by name"),
+            Form("search-by-shooting-location", "motion-picture-misc", [
+                TextInput("shooting-location", "Shooting Location")],
+                "Search by shooting location"),
+            Form("search-movies-with-more-than-x-likes", "motion-picture-misc", [
+                TextInput("likes", "Minimum likes"),
+                TextInput("age", "from users younger than")],
+                "Search movies"),
+            Form("search-top-2-thriller-movies", "motion-picture-misc", [],
+                "Top thriller movies shot in Boston", true),
+            Form("search-higher-rating-than-average-comedy", "motion-picture-misc", [],
+                "Movies better than the average comedy", true),
+            Form("search-most-involved-movies", "motion-picture-misc", [],
+                "Top 5 movies with the most involved people", true)
+        ])?>
+        <?php echo TabContent("people-misc", [
+            Form("search-directors-in-zipcode", "people-misc", [
+                TextInput("zipcode", "Zipcode")],
+                "Search for directed TV series"),
+            Form("search-award-winners", "people-misc", [
+                TextInput("award-count", "Minimum awards for a single picture in a single year")],
+                "Search award winners"),
+            Form("search-producers", "people-misc", [
+                TextInput("box-office-collection", "Minimum box office collection"),
+                TextInput("budget", "Maximum budget")],
+                "Search for American producers"),
+            Form("search-actors-with-multiple-roles", "people-misc", [
+                TextInput("rating", "Minimum picture rating")],
+                "Search actors with multiple roles"),
+            Form("search-youngest-oldest-actors", "people-misc", [],
+                "Search youngest and oldest actors to win an award", true),
+            Form("search-actors-in-marvel-and-warner-bros", "people-misc", [],
+                "Search actors in Marvel and Warner Bros", true),
+            Form("search-actors-with-same-birthday", "people-misc", [],
+                "Search actors with same birthday", true)
+        ])?>
+        <?php echo TabContent("meta", [
+            Form("show-tables", "meta", [], "Show all tables"),
+        ])?>
     </div>
 </div>
 
@@ -100,7 +147,7 @@ require_once "components.php";
     function dbg($var): void
     {
         echo "<pre>";
-        var_dump($var);
+        # var_dump($var);
         echo "</pre>";
     }
 
@@ -261,6 +308,9 @@ require_once "components.php";
 
         $query = $qb->build();
         $table_header = TableHeader(["Name", "Rating", "Production", "Budget", "Genre(s)"]);
+    } else if (isset($_POST['show-tables-submitted'])) {
+        $query = $conn->prepare("SHOW TABLES;");
+        $table_header = TableHeader(["Tables"]);
     } else {
         $query = $conn->prepare("SELECT * FROM MotionPicture;");
         $table_header = TableHeader(["ID", "Name", "Rating", "Production", "Budget"]);
