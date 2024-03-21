@@ -366,8 +366,7 @@ require_once "components.php";
         $query = $qb->build();
         $table_header = TableHeader(["Name", "Rating"]);
     } else if (isset($_POST['search-most-involved-movies-submitted'])) {
-        // TODO: I asked on the forum, should role_count be COUNT(DISTINCT)?
-        $qb = $qb->select('M.name', 'COUNT(DISTINCT P.id) as people_count', 'COUNT(R.role_name) as role_count')
+        $qb = $qb->select('M.name', 'COUNT(DISTINCT P.id) as people_count', 'COUNT(DISTINCT R.role_name) as role_count')
             ->from('MotionPicture M')
             ->groupBy('M.id')
             ->leftJoin('Role R', 'M.id = R.mpid')
