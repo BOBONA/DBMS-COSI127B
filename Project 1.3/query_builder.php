@@ -29,7 +29,7 @@ class QueryBuilder
     private string $from = '';
     private array $joins = [];
     private array $where = [];
-    private string $groupBy = '';
+    private array $groupBy = [];
     private array $groups = [];
     private array $having = [];
     private string $orderBy = '';
@@ -56,7 +56,7 @@ class QueryBuilder
         $this->from = '';
         $this->joins = [];
         $this->where = [];
-        $this->groupBy = '';
+        $this->groupBy = [];
         $this->groups = [];
         $this->having = [];
         $this->orderBy = '';
@@ -155,12 +155,12 @@ class QueryBuilder
     /**
      * Specify the column for grouping.
      *
-     * @param string $column The column to group by.
+     * @param array $columns The column to group by.
      * @return $this
      */
-    public function groupBy(string $column): self
+    public function groupBy(string ...$columns): self
     {
-        $this->groupBy = $column;
+        $this->groupBy = $columns;
         return $this;
     }
 
@@ -223,9 +223,13 @@ class QueryBuilder
     {
         // Handle the grouping columns
         $shouldGroup = count($this->groups) > 0 && !empty($this->groupBy);
+        dbg(count($this->groups));
+        dbg(empty($this->groupBy));
+        dbg($shouldGroup);
         $groupColumns = $shouldGroup ? ', ' . implode(', ', array_map(function ($column, $alias) {
                 return "GROUP_CONCAT(DISTINCT $column SEPARATOR ', ') as $alias";
             }, array_keys($this->groups), array_values($this->groups))) : '';
+        dbg($groupColumns);
 
         // Handle the full SELECT FROM clause
         $sql = 'SELECT ' . implode(', ', $this->select)
@@ -240,7 +244,7 @@ class QueryBuilder
 
         // Handle the GROUP BY specifier
         if (!empty($this->groupBy)) {
-            $sql .= ' GROUP BY ' . $this->groupBy;
+            $sql .= ' GROUP BY ' . implode(", ", $this->groupBy);
         }
 
         // Append all `HAVING`s joined by `AND`
