@@ -311,6 +311,7 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Rating", "Production", "Budget", "Genre(s)"]);
     } /* <format trick> */
     else if (isset($_POST['search-by-name-submitted'])) {
+        // 2. Search Motion Picture by Motion picture name (parameterized). List the movie name, rating, production and budget.
         $qb = $qb->select('M.name', 'M.rating', 'M.production', 'M.budget')
             ->from('MotionPicture M')
             ->groupBy('M.id')
@@ -322,6 +323,8 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Rating", "Production", "Budget", "Genre(s)"]);
     } /* <format trick> */
     else if (isset($_POST['search-by-shooting-location-submitted'])) {
+        // 4. Search motion pictures by their shooting location country (parameterized). List only the
+        // motion picture names without any duplicates.
         $qb = $qb->select('M.name')
             ->from('MotionPicture M')
             ->groupBy('M.id')
@@ -333,6 +336,8 @@ require_once "components.php";
         $table_header = TableHeader(["Name"]);
     }/* <format trick> */
     else if (isset($_POST['search-movies-with-more-than-x-likes-submitted'])) {
+        // 11. Find all the movies with more than “X” (parameterized) likes by users of age less than “Y”
+        // (parameterized). List the movie names and the number of likes by those age-group users.
         $qb = $qb->select('M.name', 'COUNT(L.uemail) as likes')
             ->from('MotionPicture M')
             ->groupBy('M.id')
@@ -347,6 +352,9 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Likes"]);
     } /* <format trick> */
     else if (isset($_POST['search-top-2-thriller-movies-submitted'])) {
+        // 10. Find the top 2 rates thriller movies (genre is thriller) that were shot exclusively in Boston.
+        // This means that the movie cannot have any other shooting location. List the movie names
+        // and their ratings.
         $qb = $qb->select('M.name', 'M.rating')
             ->from('MotionPicture M')
             ->leftJoin('Location L', 'M.id = L.mpid')
@@ -363,6 +371,8 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Rating"]);
     } /* <format trick> */
     else if (isset($_POST['search-higher-rating-than-average-comedy-submitted'])) {
+        // 13. Find the motion pictures that have a higher rating than the average rating of all comedy
+        // (genre) motion pictures. Show the names and ratings in descending order of ratings.
         $qb = $qb->select('M.name', 'M.rating')
             ->from('MotionPicture M')
             ->groupBy('M.id')
@@ -375,6 +385,8 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Rating"]);
     } /* <format trick> */
     else if (isset($_POST['search-most-involved-movies-submitted'])) {
+        // 14. Find the top 5 movies with the highest number of people playing a role in that movie. Show
+        // the movie name, people count and role count for the movies.
         $qb = $qb->select('M.name', 'COUNT(DISTINCT P.id) as people_count', 'COUNT(DISTINCT R.role_name) as role_count')
             ->from('MotionPicture M')
             ->groupBy('M.id')
@@ -387,7 +399,7 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "People Count", "Role Count"]);
     } /* <format trick> */
     else if (isset($_POST['search-directors-in-zipcode-submitted'])) {
-        // List all directors who have directed TV series shot in a specific zip code (parameterized).
+        // 5. List all directors who have directed TV series shot in a specific zip code (parameterized).
         $qb = $qb->select("P.name as Director")
             ->from("Location L")
             ->innerJoin("Role R", "L.mpid = R.mpid")
@@ -407,7 +419,7 @@ require_once "components.php";
 
     } /* <format trick> */
     else if (isset($_POST['search-award-winners-submitted'])) {
-        // Find the people who have received more than “k” (parameterized) awards for a single motion
+        // 6. Find the people who have received more than “k” (parameterized) awards for a single motion
         // picture in the same year. List the person name, motion picture name, award year and award
         // count.
         // TODO fix gorupby groupCol
@@ -428,7 +440,7 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Motion Picture", "Award Year", "Award Count"]);
     } /* <format trick> */
     else if (isset($_POST['search-producers-submitted'])) {
-        // Find the American Producers who had a box office collection of more than or equal to “X”
+        // 8. Find the American Producers who had a box office collection of more than or equal to “X”
         // (parameterized) with a budget less than or equal to “Y” (parameterized). List the producer
         // name, movie name, box office collection and budget
         $qb = $qb->select("P.name", "M.name as MotionPicture", "Mo.boxoffice_collection", "M.budget")
@@ -451,7 +463,7 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Motion Picture", "Box Office Collection", "Budget"]);
     } /* <format trick> */
     else if (isset($_POST['search-actors-with-multiple-roles-submitted'])) {
-        // List the people who have played multiple roles in a motion picture where the rating is more
+        // 9. List the people who have played multiple roles in a motion picture where the rating is more
         // than “X” (parameterized). List the person’s name, motion picture name and count of number
         // of roles for that particular motion picture.
         $qb = $qb->select("P.name", "M.name as MotionPicture", "COUNT(R.role_name) as RoleCount")
@@ -471,10 +483,10 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Motion Picture", "Role Count"]);
     } /* <format trick> */
     else if (isset($_POST['search-youngest-oldest-actors-submitted'])) {
-        // Find the youngest and oldest actors to win at least one award. List the actor names and their
+        // 7. Find the youngest and oldest actors to win at least one award. List the actor names and their
         // age (at the time they received the award). The age should be computed from the person’s
         // date of birth to the award-winning year only. In case of a tie, list all of them.
-        $qb=  $qb->select("P.name", "A.award_year - YEAR(P.dob) as age")
+        $qb = $qb->select("P.name", "A.award_year - YEAR(P.dob) as age")
             ->from("Award A")
             ->innerJoin("People P", "A.pid = P.id")
             ->orderBy("age", "ASC")
@@ -485,7 +497,7 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Age"]);
     } /* <format trick> */
     else if (isset($_POST['search-actors-in-marvel-and-warner-bros-submitted'])) {
-        // Find the actors who have played a role in both “Marvel” and “Warner Bros” productions.
+        // 12. Find the actors who have played a role in both “Marvel” and “Warner Bros” productions.
         // List the actor names and the corresponding motion picture names.
         $qb = $qb->select("P.name", "M.name as MotionPicture, M.production")
             ->from("Role R")
@@ -500,7 +512,7 @@ require_once "components.php";
         $table_header = TableHeader(["Name", "Motion Picture"]);
     } /* <format trick> */
     else if (isset($_POST['search-actors-with-same-birthday-submitted'])) {
-        // Find actors who share the same birthday. List the actor names (actor 1, actor 2) and their
+        // 15. Find actors who share the same birthday. List the actor names (actor 1, actor 2) and their
         // common birthday.
         $qb = $qb->select("P1.name as Actor1", "P2.name as Actor2", "P1.dob as Birthday")
             ->from("People P1")
@@ -514,6 +526,7 @@ require_once "components.php";
 
     }/* <format trick> */
     else if (isset($_POST['show-tables-submitted'])) {
+        // 1. List all the tables in the database.
         $query = $conn->prepare("SHOW TABLES;");
         $table_header = TableHeader(["Tables"]);
     } /* <format trick> */
