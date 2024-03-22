@@ -125,7 +125,7 @@ require_once "components.php";
                 TextInput("budget", "Maximum budget")],
                 "Search for American producers"),
             Form("search-actors-with-multiple-roles", "people-misc", [
-                TextInput("rating", "Minimum picture rating")],
+                TextInput("rating", "Picture rating more than")],
                 "Search actors with multiple roles"),
             Form("search-youngest-oldest-actors", "people-misc", [],
                 "Search youngest and oldest actors to win an award", true),
@@ -422,7 +422,6 @@ require_once "components.php";
         // 6. Find the people who have received more than “k” (parameterized) awards for a single motion
         // picture in the same year. List the person name, motion picture name, award year and award
         // count.
-        // TODO fix gorupby groupCol
         $qb = $qb->select("P.name", "M.name as MotionPicture", "COUNT(A.award_name) as AwardCount",
             "A.award_year"
         )
@@ -454,7 +453,7 @@ require_once "components.php";
             ->where("P.nationality = 'USA'")
             ->where("R.role_name = 'Producer'");
         if (!empty($_POST['box-office-collection'])) {
-            $qb->where("M.box_office_collection >= :box_office_collection");
+            $qb->where("Mo.boxoffice_collection >= :box_office_collection");
             $qb->params[':box_office_collection'] = $_POST['box-office-collection'];
         }
         if (!empty($_POST['budget'])) {

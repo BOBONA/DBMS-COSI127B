@@ -1,4 +1,4 @@
-# IMBD Clone
+# IMDB Clone
 
 ## Contribution
 
