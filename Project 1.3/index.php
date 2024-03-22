@@ -503,6 +503,7 @@ require_once "components.php";
     else if (isset($_POST['search-actors-in-marvel-and-warner-bros-submitted'])) {
         // 12. Find the actors who have played a role in both “Marvel” and “Warner Bros” productions.
         // List the actor names and the corresponding motion picture names.
+        // TODO turn this into the query builder
         $sql = "
         SELECT 
             P.name, 
@@ -513,7 +514,6 @@ require_once "components.php";
         WHERE M.production = 'Marvel' OR M.production = 'Warner Bros'
         GROUP BY P.id 
         HAVING COUNT(DISTINCT M.production) > 1;
-        
         ";
 
         $query = $conn->prepare($sql);
