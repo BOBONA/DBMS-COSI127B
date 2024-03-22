@@ -118,7 +118,7 @@ require_once "components.php";
                 TextInput("zipcode", "Zipcode")],
                 "Search for directed TV series"),
             Form("search-award-winners", "people-misc", [
-                TextInput("award-count", "Minimum awards for a single picture in a single year")],
+                TextInput("award-count", "Minimum awards for a single picture in a single year (non-inclusive)")],
                 "Search award winners"),
             Form("search-producers", "people-misc", [
                 TextInput("box-office-collection", "Minimum box office collection"),
@@ -411,9 +411,12 @@ require_once "components.php";
         // picture in the same year. List the person name, motion picture name, award year and award
         // count.
         // TODO fix gorupby groupCol
-        $qb = $qb->select("P.name", "M.name as MotionPicture", "A.award_year", "COUNT(A.award_name) as AwardCount")
+        $qb = $qb->select("P.name", "M.name as MotionPicture", "COUNT(A.award_name) as AwardCount",
+            "A.award_year"
+        )
             ->from("Award A")
             ->innerJoin("People P", "A.pid = P.id")
+            ->groupCol("A.award_name", "AwardName")
             ->innerJoin("MotionPicture M", "A.mpid = M.id")
             ->orderBy("AwardCount", "DESC")
             ->groupBy("P.id", "M.id", "A.award_year")
@@ -425,7 +428,7 @@ require_once "components.php";
         }
 
         $query = $qb->build();
-        $table_header = TableHeader(["Name", "Motion Picture", "Award Year", "Award Count"]);
+        $table_header = TableHeader(["Name", "Motion Picture", "Award Count",  "Award Year", "Award name(s)"]);
     } /* <format trick> */
     else if (isset($_POST['search-producers-submitted'])) {
         // Find the American Producers who had a box office collection of more than or equal to “X”
@@ -474,12 +477,14 @@ require_once "components.php";
         // Find the youngest and oldest actors to win at least one award. List the actor names and their
         // age (at the time they received the award). The age should be computed from the person’s
         // date of birth to the award-winning year only. In case of a tie, list all of them.
-        $qb=  $qb->select("P.name", "A.award_year - YEAR(P.dob) as age")
+        $qb = $qb->select("P.name", "A.award_year - YEAR(P.dob) as age")
             ->from("Award A")
             ->innerJoin("People P", "A.pid = P.id")
-            ->orderBy("age", "ASC")
-            ->groupBy("P.id")
-            ->having("age = MIN(age) OR age = MAX(age)");
+            ->where("
+                A.award_year - YEAR(P.dob) = (SELECT MIN(A2.award_year - YEAR(P2.dob)) FROM Award A2 INNER JOIN People P2 ON A2.pid = P2.id) OR 
+                A.award_year - YEAR(P.dob) = (SELECT MAX(A3.award_year - YEAR(P3.dob)) FROM Award A3 INNER JOIN People P3 ON A3.pid = P3.id)
+            ")
+            ->orderBy("age", "ASC");
 
         $query = $qb->build();
         $table_header = TableHeader(["Name", "Age"]);
