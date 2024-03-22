@@ -146,9 +146,9 @@ require_once "components.php";
 
     function dbg($var): void
     {
-        echo "<pre>";
-        var_dump($var);
-        echo "</pre>";
+//        echo "<pre>";
+//        var_dump($var);
+//        echo "</pre>";
     }
 
     dbg($_POST);
