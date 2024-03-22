@@ -505,53 +505,21 @@ require_once "components.php";
         // 12. Find the actors who have played a role in both “Marvel” and “Warner Bros” productions.
         // List the actor names and the corresponding motion picture names.
         $sql = "
-        SELECT
+        SELECT 
+            P.name, 
+            GROUP_CONCAT(DISTINCT M.name SEPARATOR ', ') as MotionPicture
         FROM People P 
-        WHERE P.
+        INNER JOIN Role R ON P.id = R.pid AND R.role_name = 'Actor'
+        INNER JOIN MotionPicture M ON R.mpid = M.id
+        WHERE M.production = 'Marvel' OR M.production = 'Warner Bros'
+        GROUP BY P.id 
+        HAVING COUNT(DISTINCT M.production) > 1;
+        
         ";
 
-        $qb = $qb->select("P.name" )
-            ->from("People P")
-            ->innerJoin("Role R", "P.id = R.pid AND R.role_name = 'Actor'")
-            ->innerJoin("MotionPicture M", "R.mpid = M.id")
-            ->where("M.production = 'Marvel' OR M.production = 'Warner Bros'")
-            ->where("
-                EXISTS (
-                    SELECT 1 
-                    FROM Role R2 
-                    INNER JOIN MotionPicture M2 
-                    ON 
-                        M2.id = R2.mpid AND
-                        R2.pid = P.id AND 
-                        R2.role_name = 'Actor' AND 
-                        M2.production = 'Marvel' AND 
-                ) AND
-                EXISTS (
-                    SELECT 1 
-                    FROM Role R2
-                    INNER JOIN MotionPicture M2 
-                    ON 
-                        R2.pid = P.id AND 
-                        R2.role_name = 'Actor' AND 
-                        M2.production = 'Warner Bros' AND 
-                        M2.id = R2.mpid
-                )")
-            ->groupBy("P.name")
-            ->groupCol("M.name", "MotionPicture");
+        $query = $conn->prepare($sql);
+        dbg($query);
 
-
-
-//        $qb = $qb->select("P.name")
-//            ->from("Role R")
-//            ->innerJoin("People P", "R.pid = P.id AND R.role_name = 'Actor'")->groupCol("M.name", "MotionPicture")
-//            ->innerJoin("MotionPicture M", "R.mpid = M.id")
-//            ->where("(
-//                M.production = 'Marvel' OR M.production = 'Warner Bros')
-//                ")
-//            ->orderBy("P.name", "ASC")
-//            ->groupBy("P.id");
-
-        $query = $qb->build();
         $table_header = TableHeader(["Name", "Motion Picture"]);
     } /* <format trick> */
     else if (isset($_POST['search-actors-with-same-birthday-submitted'])) {
